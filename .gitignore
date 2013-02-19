@@ -1,5 +1,7 @@
 .classpath
 .project
 .settings
+
+#Eclipse bin folder
 bin
 
