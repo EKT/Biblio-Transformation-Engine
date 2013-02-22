@@ -2,7 +2,7 @@ package gr.ekt.bte.core;
 
 public class StringValue implements Value {
     private String value_;
-    
+
     public StringValue(String value) {
         value_ = value;
     }

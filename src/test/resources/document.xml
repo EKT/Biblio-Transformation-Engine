@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<root>
+  <node1>
+    <leaf1 attribute="leaf1 attribute">
+      Text of leaf1
+    </leaf1>
+  </node1>
+  <node2>
+    Text of node2 that contains
+    <leaf2 attribute="leaf2 attribute">
+      a leaf with text.
+    </leaf2>
+  </node2>
+</root>
