@@ -6,3 +6,4 @@ target/
 #Eclipse bin folder
 bin
 
+*.log
