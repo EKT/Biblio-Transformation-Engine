@@ -8,7 +8,13 @@
   <node2>
     Text of node2 that contains
     <leaf2 attribute="leaf2 attribute">
-      a leaf with text.
+      a leaf with text
     </leaf2>
+    and has some more text at the end.
   </node2>
+  <node3>
+    <leaf3>
+      foo
+    </leaf3>
+  </node3>
 </root>

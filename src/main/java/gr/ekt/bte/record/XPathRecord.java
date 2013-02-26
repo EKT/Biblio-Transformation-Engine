@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 import gr.ekt.bte.core.Value;
 import gr.ekt.bte.core.Record;
 import gr.ekt.bte.core.StringValue;
-
+import gr.ekt.bte.core.MutableRecord;
 
 
 public class XPathRecord implements Record {
@@ -22,7 +22,8 @@ public class XPathRecord implements Record {
     private Map<String, XPathExpression> xpath_map_;
     private Logger logger = Logger.getLogger(XPathRecord.class);
 
-    public XPathRecord(Document doc, Map<String, String> xpath_string_map) throws XPathExpressionException {
+    public XPathRecord(Document doc, Map<String, String> xpath_string_map)
+            throws XPathExpressionException {
         doc_ = doc;
         xpath_map_ = new TreeMap<String, XPathExpression>();
 
@@ -45,6 +46,7 @@ public class XPathRecord implements Record {
             ArrayList<Value> ret = new ArrayList<Value>();
             for (int i = 0; i < lst.getLength(); i++) {
                 String str = lst.item(i).getTextContent().trim();
+                //Ignore empty lines
                 if (!"".equals(str)) {
                     ret.add(new StringValue(str));
                 }
@@ -58,32 +60,18 @@ public class XPathRecord implements Record {
     }
 
     @Override
-    public boolean addField(String field, List<Value> values) {
-        return false;
+    public MutableRecord makeMutable() {
+        MapRecord mr = new MapRecord();
+
+        for (String field : xpath_map_.keySet()) {
+            mr.addField(field, this.getValues(field));
+        }
+
+        return mr;
     }
 
     @Override
-    public boolean addValue(String field, Value value) {
-        return false;
-    }
-
-    @Override
-    public boolean removeField(String field) {
-        return false;
-    }
-
-    @Override
-    public boolean removeValue(String field, Value value) {
-        return false;
-    }
-
-    @Override
-    public boolean updateField(String field, List<Value> value) {
-        return false;
-    }
-
-    @Override
-    public boolean updateValue(String field, Value old_value, Value new_value) {
+    public boolean isMutable() {
         return false;
     }
 }
