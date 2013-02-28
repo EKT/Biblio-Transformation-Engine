@@ -1,7 +1,13 @@
 package gr.ekt.bte.core;
 
 public abstract class AbstractModifier implements ProcessingStep {
+    private String name;
 
+    public AbstractModifier(String name) {
+        this.name = name;
+    }
+
+    @Override
     public RecordSet execute(RecordSet recs) {
         RecordSet ret = new RecordSet();
         Record modified_record;
@@ -11,6 +17,11 @@ public abstract class AbstractModifier implements ProcessingStep {
         }
 
         return recs;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     public abstract Record modify(MutableRecord rec);
