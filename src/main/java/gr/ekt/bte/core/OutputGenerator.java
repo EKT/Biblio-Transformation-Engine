@@ -1,7 +1,8 @@
 package gr.ekt.bte.core;
 
+import java.util.List;
+
 public interface OutputGenerator {
-    public void generateOutput(RecordSet recs);
-    public void writeOutput(RecordSet recs);
-    public void writeOutput(RecordSet recs, DataOutputSpec spec);
+    public List<String> generateOutput(RecordSet recs);
+    public List<String> generateOutput(RecordSet recs, DataOutputSpec spec);
 }

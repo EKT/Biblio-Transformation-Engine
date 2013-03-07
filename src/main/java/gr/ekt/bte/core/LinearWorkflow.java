@@ -25,6 +25,11 @@ public class LinearWorkflow implements Workflow {
         return recs;
     }
 
+    @Override
+    public List<ProcessingStep> getSteps() {
+        return process_;
+    }
+
     public void setProcess(List<ProcessingStep> process) {
         process_ = process;
     }

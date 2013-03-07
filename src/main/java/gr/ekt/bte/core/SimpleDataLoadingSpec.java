@@ -2,30 +2,22 @@ package gr.ekt.bte.core;
 
 import java.util.Date;
 
-public class TransformationSpec {
+public class SimpleDataLoadingSpec implements DataLoadingSpec {
     private int n_records;
     private int offset;
     private String data_set_name;
-    Date from_date;
-    Date until_date;
+    private Date from_date;
+    private Date until_date;
 
-    public TransformationSpec() {
-        n_records = 100;
+    public SimpleDataLoadingSpec() {
+        n_records = 0;
         offset = 0;
         data_set_name = null;
         from_date = null;
         until_date = null;
     }
 
-    public TransformationSpec(int n_records, int offset, String data_set_name,
-                              Date from_date, Date until_date) {
-        this.n_records = n_records;
-        this.offset = offset;
-        this.data_set_name = data_set_name;
-        this.from_date = from_date;
-        this.until_date = until_date;
-    }
-
+    @Override
     public int getNumberOfRecords() {
         return n_records;
     }
@@ -34,6 +26,7 @@ public class TransformationSpec {
         this.n_records = n_records;
     }
 
+    @Override
     public int getOffset() {
         return offset;
     }
@@ -42,14 +35,16 @@ public class TransformationSpec {
         this.offset = offset;
     }
 
+    @Override
     public String getDataSetName() {
         return data_set_name;
     }
 
-    public void setDataSetName(String data_set_name) {
+    public void setDataSetName(String set_name) {
         this.data_set_name = data_set_name;
     }
 
+    @Override
     public Date getFromDate() {
         return from_date;
     }
@@ -58,6 +53,7 @@ public class TransformationSpec {
         this.from_date = from_date;
     }
 
+    @Override
     public Date getUntilDate() {
         return until_date;
     }

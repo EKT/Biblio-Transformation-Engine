@@ -5,22 +5,20 @@ import java.util.List;
 public class TransformationLog {
     private TransformationSpec transformation_spec;
     private List<DataLoadingSpec> loading_spec_list;
-    private long number_of_examined_records;
+    private long first_unexamined_record;
     private long start_time;
     private long end_time;
     private long transformation_time;
     private List<ProcessingStep> processing_step_list;
-    private RecordSet records;
 
     public TransformationLog() {
         transformation_spec = null;
         loading_spec_list = null;
-        number_of_examined_records = 0;
+        first_unexamined_record = 0;
         start_time = 0;
         end_time = 0;
         transformation_time = 0;
         processing_step_list = null;
-        records = null;
     }
 
     public void setTransformationSpec(TransformationSpec spec) {
@@ -39,12 +37,12 @@ public class TransformationLog {
         return loading_spec_list;
     }
 
-    public void setNumberOfExaminedRecords(long n_records) {
-        number_of_examined_records = n_records;
+    public void setFirstUnexaminedRecord(long n_records) {
+        first_unexamined_record = n_records;
     }
 
-    public long setNumberOfExaminedRecords() {
-        return number_of_examined_records;
+    public long getFirstUnexaminedRecord() {
+        return first_unexamined_record;
     }
 
     public void setStartTime(long st_time) {
@@ -63,19 +61,19 @@ public class TransformationLog {
         return end_time;
     }
 
+    public void setTransformationTime(long t_time) {
+        transformation_time = t_time;
+    }
+
+    public long getTransformationTime() {
+        return transformation_time;
+    }
+
     public void setProcessingStepList(List<ProcessingStep> lst) {
         processing_step_list = lst;
     }
 
     public List<ProcessingStep> getProcessingStepList() {
         return processing_step_list;
-    }
-
-    public void setRecords(RecordSet recs) {
-        records = recs;
-    }
-
-    public RecordSet getRecords() {
-        return records;
     }
 }
