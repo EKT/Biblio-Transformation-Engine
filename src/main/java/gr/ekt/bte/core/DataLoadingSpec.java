@@ -8,5 +8,6 @@ public interface DataLoadingSpec {
     public String getDataSetName();
     public Date getFromDate();
     public Date getUntilDate();
+    public String getIdentifier();
 }
 

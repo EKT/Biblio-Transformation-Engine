@@ -8,6 +8,7 @@ public class SimpleDataLoadingSpec implements DataLoadingSpec {
     private String data_set_name;
     private Date from_date;
     private Date until_date;
+    private String id;
 
     public SimpleDataLoadingSpec() {
         n_records = 0;
@@ -60,5 +61,14 @@ public class SimpleDataLoadingSpec implements DataLoadingSpec {
 
     public void setUntilDate(Date until_date) {
         this.until_date = until_date;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return id;
+    }
+
+    public void setIdentifier(String id) {
+        this.id = id;
     }
 }

@@ -2,6 +2,7 @@ package gr.ekt.bte.core;
 
 import org.apache.log4j.Logger;
 import gr.ekt.bte.exceptions.EmptySourceException;
+import gr.ekt.bte.exceptions.BadTransformationSpec;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Calendar;
@@ -21,7 +22,10 @@ public class TransformationEngine {
         workflow_ = workflow;
     }
 
-    public TransformationResult transform(TransformationSpec spec) {
+    public TransformationResult transform(TransformationSpec spec) throws BadTransformationSpec {
+        if (!checkSpec(spec)) {
+            throw new BadTransformationSpec();
+        }
         TransformationLog log = new TransformationLog();
         List<DataLoadingSpec> loading_spec_list = new ArrayList<DataLoadingSpec>();
 
@@ -105,6 +109,21 @@ public class TransformationEngine {
         ret.setDataSetName(spec.getDataSetName());
         ret.setFromDate(spec.getFromDate());
         ret.setUntilDate(spec.getUntilDate());
+        ret.setIdentifier(spec.getIdentifier());
         return ret;
+    }
+
+    private boolean checkSpec(TransformationSpec spec) {
+        // The spec must have EITHER an id OR other info.
+        if (spec.getIdentifier() != null &&
+            (spec.getNumberOfRecords() != 0 ||
+             spec.getOffset() != 0 ||
+             spec.getDataSetName() != null ||
+             spec.getFromDate() != null ||
+             spec.getUntilDate() != null)) {
+            return false;
+        }
+
+        return true;
     }
 }
