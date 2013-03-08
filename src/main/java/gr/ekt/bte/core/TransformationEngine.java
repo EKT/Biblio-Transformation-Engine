@@ -35,6 +35,7 @@ public class TransformationEngine {
         int n_records = 0;
         int kept_records = 0;
         List<String> output = new ArrayList<String>();
+        boolean end_of_input = false;
 
         while(output.size() != spec.getNumberOfRecords()) {
             RecordSet tmp_recs = null;
@@ -49,6 +50,7 @@ public class TransformationEngine {
 
             //no more records from the source.
             if (tmp_recs.size() == 0) {
+                end_of_input = true;
                 break;
             }
             n_records += tmp_recs.size();
@@ -84,6 +86,7 @@ public class TransformationEngine {
         log.setEndTime(end_time);
         log.setTransformationTime(duration);
         log.setProcessingStepList(workflow_.getSteps());
+        log.setEndOfInput(end_of_input);
 
         TransformationResult res = new TransformationResult(log, output);
         return res;

@@ -10,6 +10,7 @@ public class TransformationLog {
     private long end_time;
     private long transformation_time;
     private List<ProcessingStep> processing_step_list;
+    private boolean end_of_input
 
     public TransformationLog() {
         transformation_spec = null;
@@ -19,6 +20,7 @@ public class TransformationLog {
         end_time = 0;
         transformation_time = 0;
         processing_step_list = null;
+        end_of_input = false;
     }
 
     public void setTransformationSpec(TransformationSpec spec) {
@@ -75,5 +77,13 @@ public class TransformationLog {
 
     public List<ProcessingStep> getProcessingStepList() {
         return processing_step_list;
+    }
+
+    public void setEndOfInput(boolean end_of_input) {
+        this.end_of_input = end_of_input;
+    }
+
+    public boolean getEndOfInput() {
+        return end_of_input;
     }
 }
