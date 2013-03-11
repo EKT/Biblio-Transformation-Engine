@@ -4,21 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LinearWorkflow implements Workflow {
-    private List<ProcessingStep> process_;
+    private List<ProcessingStep> process;
 
     public LinearWorkflow() {
-        process_ = new ArrayList<ProcessingStep>();
+        this.process = new ArrayList<ProcessingStep>();
     }
 
     @Override
     public void addStep(ProcessingStep step) {
-        process_.add(step);
+        process.add(step);
     }
 
     @Override
     public RecordSet run(RecordSet records) {
         RecordSet recs = records;
-        for (ProcessingStep step : process_) {
+        for (ProcessingStep step : process) {
             recs = step.execute(recs);
         }
 
@@ -27,10 +27,10 @@ public class LinearWorkflow implements Workflow {
 
     @Override
     public List<ProcessingStep> getSteps() {
-        return process_;
+        return process;
     }
 
     public void setProcess(List<ProcessingStep> process) {
-        process_ = process;
+        this.process = process;
     }
 }

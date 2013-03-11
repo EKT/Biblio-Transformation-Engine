@@ -119,7 +119,7 @@ public class TransformationEngine {
     private boolean checkSpec(TransformationSpec spec) {
         // The spec must have EITHER an id OR other info.
         if (spec.getIdentifier() != null &&
-            (spec.getNumberOfRecords() != 0 ||
+            (spec.getNumberOfRecords() != 1 ||
              spec.getOffset() != 0 ||
              spec.getDataSetName() != null ||
              spec.getFromDate() != null ||

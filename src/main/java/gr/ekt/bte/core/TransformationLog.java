@@ -10,7 +10,7 @@ public class TransformationLog {
     private long end_time;
     private long transformation_time;
     private List<ProcessingStep> processing_step_list;
-    private boolean end_of_input
+    private boolean end_of_input;
 
     public TransformationLog() {
         transformation_spec = null;
