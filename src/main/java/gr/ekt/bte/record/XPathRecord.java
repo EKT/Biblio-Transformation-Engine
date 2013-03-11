@@ -18,31 +18,31 @@ import gr.ekt.bte.core.MutableRecord;
 
 
 public class XPathRecord implements Record {
-    private Document doc_;
-    private Map<String, XPathExpression> xpath_map_;
+    private Document doc;
+    private Map<String, XPathExpression> xpath_map;
     private Logger logger = Logger.getLogger(XPathRecord.class);
 
     public XPathRecord(Document doc, Map<String, String> xpath_string_map)
             throws XPathExpressionException {
-        doc_ = doc;
-        xpath_map_ = new TreeMap<String, XPathExpression>();
+        this.doc = doc;
+        xpath_map = new TreeMap<String, XPathExpression>();
 
         Set<Map.Entry<String, String>> entries = xpath_string_map.entrySet();
         XPath xpath = XPathFactory.newInstance().newXPath();
         for(Map.Entry<String, String> entry : entries) {
             XPathExpression expr = xpath.compile(entry.getValue());
-            xpath_map_.put(entry.getKey(), expr);
+            xpath_map.put(entry.getKey(), expr);
         }
     }
 
     @Override
     public List<Value> getValues(String field) {
         try {
-            XPathExpression expr = xpath_map_.get(field);
+            XPathExpression expr = xpath_map.get(field);
             if (expr == null) {
                 return null;
             }
-            NodeList lst = (NodeList)expr.evaluate(doc_, XPathConstants.NODESET);
+            NodeList lst = (NodeList)expr.evaluate(doc, XPathConstants.NODESET);
             ArrayList<Value> ret = new ArrayList<Value>();
             for (int i = 0; i < lst.getLength(); i++) {
                 String str = lst.item(i).getTextContent().trim();
@@ -63,7 +63,7 @@ public class XPathRecord implements Record {
     public MutableRecord makeMutable() {
         MapRecord mr = new MapRecord();
 
-        for (String field : xpath_map_.keySet()) {
+        for (String field : xpath_map.keySet()) {
             mr.addField(field, this.getValues(field));
         }
 

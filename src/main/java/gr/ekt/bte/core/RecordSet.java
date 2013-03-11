@@ -11,43 +11,43 @@ import java.util.List;
  * @author kutsurak
  */
 public class RecordSet implements Iterable<Record> {
-    private List<Record> records_;
+    private List<Record> records;
 
     public RecordSet() {
-        records_ = new ArrayList<Record>();
+        records = new ArrayList<Record>();
     }
 
     public RecordSet(List<Record> records) {
-        records_ = new ArrayList<Record>(records);
+        records = new ArrayList<Record>(records);
     }
 
     @Override
     public Iterator<Record> iterator() {
-        return records_.iterator();
+        return records.iterator();
     }
 
     // After a talk with kstamatis we decided that records can be
     // inserted multiple times, therefore there is no way for this
     // method to fail.
     public void addRecord(Record rec) {
-        records_.add(rec);
+        records.add(rec);
     }
 
     public List<Record> getRecords() {
-        return records_;
+        return records;
     }
 
-    public void setRecords_(List<Record> records) {
-        records_ = records;
+    public void setRecords(List<Record> records) {
+        this.records = records;
     }
 
     public int size() {
-        return records_.size();
+        return records.size();
     }
 
-    public void addAll(RecordSet records) {
-        for (Record rec : records) {
-            records_.add(rec);
+    public void addAll(RecordSet other_records) {
+        for (Record rec : other_records) {
+            records.add(rec);
         }
     }
 }

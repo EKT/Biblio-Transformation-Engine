@@ -12,64 +12,64 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class MapRecordTest {
-    private MapRecord rec_;
-    private ArrayList<Value> val_;
+    private MapRecord rec;
+    private ArrayList<Value> val;
 
     @Before
     public void setUp() {
-        rec_ = new MapRecord();
-        val_ = new ArrayList<Value>();
+        rec = new MapRecord();
+        val = new ArrayList<Value>();
 
-        val_.add(new StringValue("foo"));
-        val_.add(new StringValue("bar"));
+        val.add(new StringValue("foo"));
+        val.add(new StringValue("bar"));
     }
 
     @Test
     public void testGetValues() {
-        assertNull(rec_.getValues("test"));
-        rec_.addField("test", val_);
+        assertNull(rec.getValues("test"));
+        rec.addField("test", val);
 
-        List<Value> nvals = rec_.getValues("test");
-        assertEquals(val_.size(), nvals.size());
+        List<Value> nvals = rec.getValues("test");
+        assertEquals(val.size(), nvals.size());
 
         for (int i = 0; i < nvals.size(); i++) {
-            assertEquals(val_.get(i), nvals.get(i));
+            assertEquals(val.get(i), nvals.get(i));
         }
     }
 
     @Test
     public void testAddField() {
-        assertTrue(rec_.addField("test", val_));
-        assertFalse(rec_.addField("test", val_));
+        assertTrue(rec.addField("test", val));
+        assertFalse(rec.addField("test", val));
     }
 
     @Test
     public void testAddValue() {
-        rec_.addField("test", val_);
+        rec.addField("test", val);
         Value new_val = new StringValue("baz");
-        assertTrue(rec_.addValue("test", new_val));
-        assertTrue(rec_.getValues("test").contains(new_val));
-        assertFalse(rec_.addValue("test", new StringValue("baz")));
-        assertFalse(rec_.addValue("test", new_val));
+        assertTrue(rec.addValue("test", new_val));
+        assertTrue(rec.getValues("test").contains(new_val));
+        assertFalse(rec.addValue("test", new StringValue("baz")));
+        assertFalse(rec.addValue("test", new_val));
     }
 
     @Test
     public void testRemoveField() {
-        assertFalse(rec_.removeField("test"));
-        rec_.addField("test", val_);
-        assertTrue(rec_.removeField("test"));
-        assertFalse(rec_.removeField("test"));
+        assertFalse(rec.removeField("test"));
+        rec.addField("test", val);
+        assertTrue(rec.removeField("test"));
+        assertFalse(rec.removeField("test"));
     }
 
     @Test
     public void testRemoveValue() {
-        assertFalse(rec_.removeValue("test", new StringValue("foo")));
+        assertFalse(rec.removeValue("test", new StringValue("foo")));
 
-        rec_.addField("test", val_);
+        rec.addField("test", val);
 
-        assertTrue(rec_.getValues("test").contains(val_.get(0)));
-        assertTrue(rec_.removeValue("test", val_.get(0)));
-        assertFalse(rec_.getValues("test").contains(new StringValue("foo")));
+        assertTrue(rec.getValues("test").contains(val.get(0)));
+        assertTrue(rec.removeValue("test", val.get(0)));
+        assertFalse(rec.getValues("test").contains(new StringValue("foo")));
     }
 
     @Test
@@ -78,13 +78,13 @@ public class MapRecordTest {
         val.add(new StringValue("bar"));
         val.add(new StringValue("baz"));
         val.add(new StringValue("moo"));
-        assertFalse(rec_.updateField("test", val));
+        assertFalse(rec.updateField("test", val));
 
-        rec_.addField("test", val_);
+        rec.addField("test", val);
 
-        assertTrue(rec_.updateField("test", val));
+        assertTrue(rec.updateField("test", val));
 
-        List<Value> val2 = rec_.getValues("test");
+        List<Value> val2 = rec.getValues("test");
         assertEquals(val2.size(), val.size());
         for (int i = 0; i < val2.size(); i++) {
             assertEquals(val2.get(i), val.get(i));
@@ -93,12 +93,12 @@ public class MapRecordTest {
 
     @Test
     public void testUpdateValue() {
-        Value val = new StringValue("baz");
-        assertFalse(rec_.updateValue("test", val_.get(0), val));
+        Value value = new StringValue("baz");
+        assertFalse(rec.updateValue("test", val.get(0), value));
 
-        rec_.addField("test", val_);
+        rec.addField("test", val);
 
-        assertTrue(rec_.updateValue("test", val_.get(0), val));
-        assertEquals(val, rec_.getValues("test").get(0));
+        assertTrue(rec.updateValue("test", val.get(0), value));
+        assertEquals(value, rec.getValues("test").get(0));
     }
 }

@@ -1,21 +1,21 @@
 package gr.ekt.bte.core;
 
 public class StringValue implements Value {
-    private String value_;
+    private String value;
 
     public StringValue(String value) {
-        value_ = value;
+        this.value = value;
     }
 
     @Override
     public String getAsString() {
-        return value_;
+        return value;
     }
 
     @Override
     public boolean equals(Object other) {
         Value val = (Value)other;
-        return value_.equals(val.getAsString());
+        return value.equals(val.getAsString());
     }
 
 }

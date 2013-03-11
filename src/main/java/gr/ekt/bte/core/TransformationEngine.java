@@ -9,22 +9,22 @@ import java.util.Calendar;
 import java.util.Iterator;
 
 public class TransformationEngine {
-    private DataLoader loader_;
-    private OutputGenerator generator_;
-    private Workflow workflow_;
+    private DataLoader loader;
+    private OutputGenerator generator;
+    private Workflow workflow;
     private static Logger logger = Logger.getLogger(TransformationEngine.class);
     private int current_offset;
 
 
     public TransformationEngine(DataLoader loader, OutputGenerator generator, Workflow workflow) {
-        loader_ = loader;
-        generator_ = generator;
-        workflow_ = workflow;
+        this.loader = loader;
+        this.generator = generator;
+        this.workflow = workflow;
     }
 
     public TransformationResult transform(TransformationSpec spec) throws BadTransformationSpec {
         if (!checkSpec(spec)) {
-            throw new BadTransformationSpec();
+            throw new BadTransformationSpec("Bad Spec: " + spec.toString());
         }
         TransformationLog log = new TransformationLog();
         List<DataLoadingSpec> loading_spec_list = new ArrayList<DataLoadingSpec>();
@@ -42,7 +42,7 @@ public class TransformationEngine {
             DataLoadingSpec dls = generateNextLoadingSpec(spec);
             loading_spec_list.add(dls);
             try {
-                tmp_recs = loader_.getRecords(dls);
+                tmp_recs = loader.getRecords(dls);
             } catch (EmptySourceException e) {
                 logger.info(e.getStackTrace());
                 return null;
@@ -55,7 +55,7 @@ public class TransformationEngine {
             }
             n_records += tmp_recs.size();
             logger.info("Loaded " + tmp_recs.size() + " records. Running workflow.");
-            tmp_recs = workflow_.run(tmp_recs);
+            tmp_recs = workflow.run(tmp_recs);
             kept_records = tmp_recs.size();
             logger.info(tmp_recs.size() + " records remain after workflow.");
             if (output.size() + kept_records >= spec.getNumberOfRecords()) {
@@ -75,7 +75,7 @@ public class TransformationEngine {
                 tmp_recs = recs_to_keep;
             }
             logger.info("Writing result.");
-            output.addAll(generator_.generateOutput(tmp_recs));
+            output.addAll(generator.generateOutput(tmp_recs));
         }
         long end_time = Calendar.getInstance().getTimeInMillis();
         long duration = end_time - start_time;
@@ -85,7 +85,7 @@ public class TransformationEngine {
         log.setStartTime(start_time);
         log.setEndTime(end_time);
         log.setTransformationTime(duration);
-        log.setProcessingStepList(workflow_.getSteps());
+        log.setProcessingStepList(workflow.getSteps());
         log.setEndOfInput(end_of_input);
 
         TransformationResult res = new TransformationResult(log, output);
@@ -93,15 +93,15 @@ public class TransformationEngine {
     }
 
     public void setDataLoader(DataLoader loader) {
-        loader_ = loader;
+        this.loader = loader;
     }
 
     public void setOutputGenerator(OutputGenerator generator) {
-        generator_ = generator;
+        this.generator = generator;
     }
 
     public void setWorkflow(Workflow workflow) {
-        workflow_ = workflow;
+        this.workflow = workflow;
     }
 
     private DataLoadingSpec generateNextLoadingSpec(TransformationSpec spec) {

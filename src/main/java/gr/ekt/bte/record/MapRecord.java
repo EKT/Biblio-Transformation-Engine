@@ -11,15 +11,15 @@ import java.util.TreeMap;
 
 public class MapRecord implements MutableRecord {
 
-    private Map<String, List<Value>> records_;
+    private Map<String, List<Value>> records;
 
     public MapRecord() {
-        records_ = new TreeMap<String, List<Value>>();
+        records = new TreeMap<String, List<Value>>();
     }
 
     @Override
     public List<Value> getValues(String field) {
-        return records_.get(field);
+        return records.get(field);
     }
 
     @Override
@@ -34,70 +34,70 @@ public class MapRecord implements MutableRecord {
 
     @Override
     public boolean addField(String field, List<Value> values) {
-        if (records_.containsKey(field)) {
+        if (records.containsKey(field)) {
             return false;
         }
 
-        records_.put(field, values);
+        records.put(field, values);
         return true;
     }
 
     @Override
     public boolean addValue(String field, Value value) {
-        if (!records_.containsKey(field)) {
+        if (!records.containsKey(field)) {
             ArrayList<Value> vals = new ArrayList<Value>();
             vals.add(value);
             return this.addField(field, vals);
         }
 
-        if (records_.get(field).contains(value)) {
+        if (records.get(field).contains(value)) {
             return false;
         }
 
-        records_.get(field).add(value);
+        records.get(field).add(value);
 
         return true;
     }
 
     @Override
     public boolean removeField(String field) {
-        if (!records_.containsKey(field)) {
+        if (!records.containsKey(field)) {
             return false;
         }
-        records_.remove(field);
+        records.remove(field);
         return true;
     }
 
     @Override
     public boolean removeValue(String field, Value value) {
-        if (!records_.containsKey(field) || !records_.get(field).contains(value)) {
+        if (!records.containsKey(field) || !records.get(field).contains(value)) {
             return false;
         }
 
-        records_.get(field).remove(value);
+        records.get(field).remove(value);
 
         return true;
     }
 
     @Override
     public boolean updateField(String field, List<Value> value) {
-        if (!records_.containsKey(field)) {
+        if (!records.containsKey(field)) {
             return false;
         }
 
-        records_.put(field, value);
+        records.put(field, value);
 
         return true;
     }
 
     @Override
     public boolean updateValue(String field, Value old_value, Value new_value) {
-        if (!records_.containsKey(field) || !records_.get(field).contains(old_value)) {
+        if (!records.containsKey(field) || !records.get(field).contains(old_value)) {
             return false;
         }
 
-        int idx = records_.get(field).indexOf(old_value);
-        records_.get(field).set(idx, new_value);
+        int idx = records.get(field).indexOf(old_value);
+        records.get(field).set(idx, new_value);
 
         return true;
     }
