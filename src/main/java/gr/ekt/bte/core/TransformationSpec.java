@@ -85,4 +85,17 @@ public class TransformationSpec {
     public void setIdentifier(String id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        String ret = "Spec:\n";
+        ret += "Number of records: " + n_records + "\n";
+        ret += "Offset: " + offset + "\n";
+        ret += "Set name: " + data_set_name + "\n";
+        ret += "From date: " + from_date.toString() + "\n";
+        ret += "Until date: " + until_date.toString() + "\n";
+        ret += "Identifier: " + id;
+
+        return ret;
+    }
 }
