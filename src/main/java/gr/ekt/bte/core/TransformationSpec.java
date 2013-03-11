@@ -31,7 +31,7 @@ public class TransformationSpec {
 
     public TransformationSpec(String id) {
         this.id = id;
-        n_records = 0;
+        n_records = 1;
         offset = 0;
         data_set_name = null;
         from_date = null;
