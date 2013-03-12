@@ -37,7 +37,8 @@ public class TransformationEngine {
         List<String> output = new ArrayList<String>();
         boolean end_of_input = false;
 
-        while(output.size() != spec.getNumberOfRecords()) {
+        while(output.size() < spec.getNumberOfRecords() && !end_of_input) {
+            current_offset = 0;
             RecordSet tmp_recs = null;
             DataLoadingSpec dls = generateNextLoadingSpec(spec);
             loading_spec_list.add(dls);
@@ -48,10 +49,12 @@ public class TransformationEngine {
                 return null;
             }
 
-            //no more records from the source.
-            if (tmp_recs.size() == 0) {
+            //The dataloader returned
+            if (tmp_recs.size() < dls.getNumberOfRecords()) {
                 end_of_input = true;
-                break;
+                //break;
+            } else if (tmp_recs.size() > dls.getNumberOfRecords()) {
+                //Something went really wrong... throw an exception.
             }
             n_records += tmp_recs.size();
             logger.info("Loaded " + tmp_recs.size() + " records. Running workflow.");
@@ -73,6 +76,9 @@ public class TransformationEngine {
                     recs_to_keep.addRecord(it.next());
                 }
                 tmp_recs = recs_to_keep;
+            }
+            else {
+                current_offset = n_records;
             }
             logger.info("Writing result.");
             output.addAll(generator.generateOutput(tmp_recs));

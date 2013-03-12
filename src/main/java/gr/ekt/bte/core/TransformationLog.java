@@ -5,7 +5,7 @@ import java.util.List;
 public class TransformationLog {
     private TransformationSpec transformation_spec;
     private List<DataLoadingSpec> loading_spec_list;
-    private long first_unexamined_record;
+    private int first_unexamined_record;
     private long start_time;
     private long end_time;
     private long transformation_time;
@@ -39,11 +39,11 @@ public class TransformationLog {
         return loading_spec_list;
     }
 
-    public void setFirstUnexaminedRecord(long n_records) {
+    public void setFirstUnexaminedRecord(int n_records) {
         first_unexamined_record = n_records;
     }
 
-    public long getFirstUnexaminedRecord() {
+    public int getFirstUnexaminedRecord() {
         return first_unexamined_record;
     }
 
