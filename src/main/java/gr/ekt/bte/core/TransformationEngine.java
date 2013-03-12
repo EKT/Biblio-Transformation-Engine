@@ -64,7 +64,7 @@ public class TransformationEngine {
                 //records that have been examined and either filtered
                 //out or remained in the set in order for output to be
                 //generated for spec.n_records records.
-                current_offset = n_records - (kept_records - needed_recs);  //Is this computation correct, or do we need a +1/-1?
+                current_offset = n_records - (kept_records - needed_recs);
 
 
                 Iterator<Record> it = tmp_recs.iterator();
@@ -81,7 +81,7 @@ public class TransformationEngine {
         long duration = end_time - start_time;
         log.setTransformationSpec(spec);
         log.setLoadingSpecList(loading_spec_list);
-        log.setFirstUnexaminedRecord(current_offset + 1);
+        log.setFirstUnexaminedRecord(spec.getOffset() + current_offset);
         log.setStartTime(start_time);
         log.setEndTime(end_time);
         log.setTransformationTime(duration);
@@ -108,7 +108,7 @@ public class TransformationEngine {
         SimpleDataLoadingSpec ret = new SimpleDataLoadingSpec();
 
         ret.setNumberOfRecords(spec.getNumberOfRecords());
-        ret.setOffset(spec.getOffset() + current_offset + 1);
+        ret.setOffset(spec.getOffset() + current_offset);
         ret.setDataSetName(spec.getDataSetName());
         ret.setFromDate(spec.getFromDate());
         ret.setUntilDate(spec.getUntilDate());
