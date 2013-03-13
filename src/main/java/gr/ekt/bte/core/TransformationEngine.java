@@ -37,8 +37,8 @@ public class TransformationEngine {
         List<String> output = new ArrayList<String>();
         boolean end_of_input = false;
 
+        current_offset = 0;
         while(output.size() < spec.getNumberOfRecords() && !end_of_input) {
-            current_offset = 0;
             RecordSet tmp_recs = null;
             DataLoadingSpec dls = generateNextLoadingSpec(spec);
             loading_spec_list.add(dls);
@@ -49,7 +49,8 @@ public class TransformationEngine {
                 return null;
             }
 
-            //The dataloader returned
+            //The dataloader returned fewer records than requested.
+            //This means that it has reached the end of input.
             if (tmp_recs.size() < dls.getNumberOfRecords()) {
                 end_of_input = true;
                 //break;
@@ -61,6 +62,9 @@ public class TransformationEngine {
             tmp_recs = workflow.run(tmp_recs);
             kept_records = tmp_recs.size();
             logger.info(tmp_recs.size() + " records remain after workflow.");
+
+            //This is the case where the workflow has returned exactly
+            //the number of records that we need or more.
             if (output.size() + kept_records >= spec.getNumberOfRecords()) {
                 int needed_recs = spec.getNumberOfRecords() - output.size();
                 //current_offset should contain the *number* of
@@ -77,7 +81,7 @@ public class TransformationEngine {
                 }
                 tmp_recs = recs_to_keep;
             }
-            else {
+            else { //We have less records than we need.
                 current_offset = n_records;
             }
             logger.info("Writing result.");

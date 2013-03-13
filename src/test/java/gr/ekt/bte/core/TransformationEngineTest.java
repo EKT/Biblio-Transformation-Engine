@@ -8,11 +8,18 @@ import org.junit.Test;
 
 
 public class TransformationEngineTest {
-    TransformationEngine te;
+    DataLoader dl;
+    OutputGenerator og;
+    Workflow empty_workflow;
+    Workflow full_filter_workflow;
 
     @Before
     public void setUp() {
-        te = new TransformationEngine(new SimpleDataLoader(), new SimpleOutputGenerator(), new LinearWorkflow());
+        dl = new SimpleDataLoader();
+        og = new SimpleOutputGenerator();
+        empty_workflow = new LinearWorkflow();
+        full_filter_workflow = new LinearWorkflow();
+        full_filter_workflow.addStep(new FullFilter());
     }
 
     // @Test(expected = BadTransformationSpec.class)
@@ -24,6 +31,7 @@ public class TransformationEngineTest {
 
     @Test
     public void testTransform() {
+        TransformationEngine te = new TransformationEngine(dl, og, empty_workflow);
         TransformationSpec spec = new TransformationSpec();
         spec.setNumberOfRecords(100);
 
@@ -58,6 +66,25 @@ public class TransformationEngineTest {
         }
 
         assertEquals(300, res.getOutput().size());
+        assertEquals(500, res.getLastLog().getFirstUnexaminedRecord());
+        assertTrue(res.getLastLog().getEndOfInput());
+    }
+
+    @Test
+    public void testTransformWithFullFilter() {
+        TransformationEngine te = new TransformationEngine(dl, og, full_filter_workflow);
+
+                TransformationSpec spec = new TransformationSpec();
+        spec.setNumberOfRecords(100);
+
+        TransformationResult res = null;
+        try {
+            res = te.transform(spec);
+        } catch(BadTransformationSpec e) {
+            fail(e.getMessage());
+        }
+
+        assertEquals(0, res.getOutput().size());
         assertEquals(500, res.getLastLog().getFirstUnexaminedRecord());
         assertTrue(res.getLastLog().getEndOfInput());
     }
