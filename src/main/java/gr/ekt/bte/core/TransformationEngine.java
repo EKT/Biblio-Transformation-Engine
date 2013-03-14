@@ -95,7 +95,7 @@ public class TransformationEngine {
         log.setStartTime(start_time);
         log.setEndTime(end_time);
         log.setTransformationTime(duration);
-        log.setProcessingStepList(workflow.getSteps());
+        log.setProcessingStepList(workflow.getProcess());
         log.setEndOfInput(end_of_input);
 
         TransformationResult res = new TransformationResult(log, output);

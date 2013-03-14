@@ -19,10 +19,10 @@ public class TransformationEngineTest {
         og = new SimpleOutputGenerator();
         empty_workflow = new LinearWorkflow();
         full_filter_workflow = new LinearWorkflow();
-        full_filter_workflow.addStep(new FullFilter());
+        full_filter_workflow.addStepAfter(new FullFilter());
 
         half_filter_workflow = new LinearWorkflow();
-        half_filter_workflow.addStep(new HalfFilter());
+        half_filter_workflow.addStepAfter(new HalfFilter());
     }
 
     // @Test(expected = BadTransformationSpec.class)

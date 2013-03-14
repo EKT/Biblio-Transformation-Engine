@@ -11,8 +11,13 @@ public class LinearWorkflow implements Workflow {
     }
 
     @Override
-    public void addStep(ProcessingStep step) {
+    public void addStepAfter(ProcessingStep step) {
         process.add(step);
+    }
+
+    @Override
+    public void addStepBefore(ProcessingStep step) {
+        process.add(0, step);
     }
 
     @Override
@@ -26,10 +31,11 @@ public class LinearWorkflow implements Workflow {
     }
 
     @Override
-    public List<ProcessingStep> getSteps() {
+    public List<ProcessingStep> getProcess() {
         return process;
     }
 
+    @Override
     public void setProcess(List<ProcessingStep> process) {
         this.process = process;
     }
