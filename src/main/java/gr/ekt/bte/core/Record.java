@@ -3,8 +3,13 @@ package gr.ekt.bte.core;
 import java.util.List;
 
 /**
-   The basic immutable record. The most useful operation is the
-   getValues that returns a list of values for a given field.
+   The basic immutable record.
+   <br/>
+   <br/>
+   A <code>Record</code> is in its most abstract form a mapping from
+   <code>String</code>s to <code>List</code>s of {@link Value}s. The
+   most useful operation is the getValues that returns a list of
+   values for a given field.
 
    @author Panagiotis Koutsourakis
    @author Konstantinos Stamatis
