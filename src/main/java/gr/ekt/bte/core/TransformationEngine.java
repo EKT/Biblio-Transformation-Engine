@@ -9,16 +9,22 @@ import java.util.Calendar;
 import java.util.Iterator;
 
 public class TransformationEngine {
-    private DataLoader loader;
-    private OutputGenerator generator;
+    private DataLoader dataLoader;
+    private OutputGenerator outputGenerator;
     private Workflow workflow;
     private static Logger logger = Logger.getLogger(TransformationEngine.class);
     private int current_offset;
 
 
-    public TransformationEngine(DataLoader loader, OutputGenerator generator, Workflow workflow) {
-        this.loader = loader;
-        this.generator = generator;
+    public TransformationEngine() {
+        dataLoader = null;
+        outputGenerator = null;
+        workflow = null;
+    }
+
+    public TransformationEngine(DataLoader dataLoader, OutputGenerator outputGenerator, Workflow workflow) {
+        this.dataLoader = dataLoader;
+        this.outputGenerator = outputGenerator;
         this.workflow = workflow;
     }
 
@@ -38,12 +44,12 @@ public class TransformationEngine {
         boolean end_of_input = false;
 
         current_offset = 0;
-        while(output.size() < spec.getNumberOfRecords() && !end_of_input) {
+        while((output.size() < spec.getNumberOfRecords() && !end_of_input) || (spec.getNumberOfRecords() == 0 && !end_of_input)) {
             RecordSet tmp_recs = null;
             DataLoadingSpec dls = generateNextLoadingSpec(spec);
             loading_spec_list.add(dls);
             try {
-                tmp_recs = loader.getRecords(dls);
+                tmp_recs = dataLoader.getRecords(dls);
             } catch (EmptySourceException e) {
                 logger.info(e.getStackTrace());
                 return null;
@@ -51,11 +57,13 @@ public class TransformationEngine {
 
             //The dataloader returned fewer records than requested.
             //This means that it has reached the end of input.
-            if (tmp_recs.size() < dls.getNumberOfRecords()) {
+            if (tmp_recs.size() < dls.getNumberOfRecords() && dls.getNumberOfRecords() != 0) {
                 end_of_input = true;
                 //break;
-            } else if (tmp_recs.size() > dls.getNumberOfRecords()) {
+            } else if (tmp_recs.size() > dls.getNumberOfRecords() && dls.getNumberOfRecords() != 0) {
                 //Something went really wrong... throw an exception.
+            } else if (tmp_recs.size() == 0 && dls.getNumberOfRecords() == 0) {
+                end_of_input = true;
             }
             n_records += tmp_recs.size();
             logger.info("Loaded " + tmp_recs.size() + " records. Running workflow.");
@@ -65,7 +73,7 @@ public class TransformationEngine {
 
             //This is the case where the workflow has returned exactly
             //the number of records that we need or more.
-            if (output.size() + kept_records >= spec.getNumberOfRecords()) {
+            if (spec.getNumberOfRecords() != 0 && output.size() + kept_records >= spec.getNumberOfRecords()) {
                 int needed_recs = spec.getNumberOfRecords() - output.size();
                 //current_offset should contain the *number* of
                 //records that have been examined and either filtered
@@ -85,7 +93,7 @@ public class TransformationEngine {
                 current_offset = n_records;
             }
             logger.info("Writing result.");
-            output.addAll(generator.generateOutput(tmp_recs));
+            output.addAll(outputGenerator.generateOutput(tmp_recs));
         }
         long end_time = Calendar.getInstance().getTimeInMillis();
         long duration = end_time - start_time;
@@ -102,12 +110,12 @@ public class TransformationEngine {
         return res;
     }
 
-    public void setDataLoader(DataLoader loader) {
-        this.loader = loader;
+    public void setDataLoader(DataLoader dataLoader) {
+        this.dataLoader = dataLoader;
     }
 
-    public void setOutputGenerator(OutputGenerator generator) {
-        this.generator = generator;
+    public void setOutputGenerator(OutputGenerator outputGenerator) {
+        this.outputGenerator = outputGenerator;
     }
 
     public void setWorkflow(Workflow workflow) {
