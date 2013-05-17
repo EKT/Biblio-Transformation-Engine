@@ -11,12 +11,12 @@ public class LinearWorkflow implements Workflow {
     }
 
     @Override
-    public void addStepAfter(ProcessingStep step) {
+    public void addStepAtEnd(ProcessingStep step) {
         process.add(step);
     }
 
     @Override
-    public void addStepBefore(ProcessingStep step) {
+    public void addStepAtBeggining(ProcessingStep step) {
         process.add(0, step);
     }
 
