@@ -35,7 +35,45 @@ package gr.ekt.bte.core;
 
 import gr.ekt.bte.exceptions.EmptySourceException;
 
+/**
+ * Provides the interface for the loader of data from their original
+ * form into {@link Record}s.
+ *
+ * @author Panagiotis Koutsourakis
+ * @author Konstantinos Stamatis
+ * @author Nikos Houssos
+ */
 public interface DataLoader {
+    /**
+     * Loads all the records from the data source and returns them as a
+     * {@link RecordSet}.
+     *
+     * @return A {@link RecordSet} containing all the data in the
+     * data source in the form of {@link Record}s.
+     *
+     * @throws EmptySourceException If the data source does not
+     * contain any data
+     */
     public RecordSet getRecords() throws EmptySourceException;
+
+    /**
+     * Loads records from the data source based on criteria defined by
+     * the {@link DataLoadingSpec} given as argument.
+     * <br>
+     * <br>
+     * The idea is that it might be more efficient to perform some
+     * initial filtering of records at the source, than to define and
+     * run {@link AbstractFilter}s later, for the whole set of
+     * records, that could be big.
+     *
+     * @param spec The criteria on which the initial filtering is
+     * based
+     *
+     * @return A {@link RecordSet} containing data specified by the
+     * argument in the data source in the form of {@link Record}s.
+     *
+     * @throws EmptySourceException If the source does not contain any
+     * data
+     */
     public RecordSet getRecords(DataLoadingSpec spec) throws EmptySourceException;
 }

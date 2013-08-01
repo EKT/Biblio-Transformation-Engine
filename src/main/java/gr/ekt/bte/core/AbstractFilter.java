@@ -35,8 +35,8 @@ package gr.ekt.bte.core;
 
 /**
  * Abstract class providing the interface for record filtering.
- * <br/>
- * <br/>
+ * <br>
+ * <br>
  * The user should extend this class and override the method {@link
  * AbstractFilter#isIncluded} in order to implement the criterion by
  * which the records should be filtered.
@@ -47,7 +47,7 @@ package gr.ekt.bte.core;
  */
 public abstract class AbstractFilter implements ProcessingStep {
     /**
-     * The name of the filter. Can be used for bookeping purposes.
+     * The name of the filter. Can be used for logging purposes.
      */
     private String name;
 
@@ -62,9 +62,10 @@ public abstract class AbstractFilter implements ProcessingStep {
 
     /**
      * Executes this {@link ProcessingStep}.
-     * <br/>
-     * <br/>
-     * For each {@link Record} in the argument, if {@link AbstractFilter#isIncluded} returns
+     * <br>
+     * <br>
+     * For each {@link Record} contained in the {@link RecordSet}
+     * given as argument, if {@link AbstractFilter#isIncluded} returns
      * <code>true</code> the Record is included in the return result,
      * otherwise it is ignored.
      *
@@ -86,7 +87,7 @@ public abstract class AbstractFilter implements ProcessingStep {
     }
 
     /**
-     * Gets this filter's used defined name.
+     * Gets this filter's user defined name.
      *
      * @return The name of the filter
      */

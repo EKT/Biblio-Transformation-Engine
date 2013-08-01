@@ -33,13 +33,48 @@
  */
 package gr.ekt.bte.core;
 
+/**
+ * Abstract class that provides the interface for record
+ * modifications.
+ * <br>
+ * <br>
+ * The user should extend this class and override the method {@link
+ * AbstractModifier#modify} in order to implement the desired record
+ * modifications.
+ *
+ *  @author Panagiotis Koutsourakis
+ *  @author Konstantinos Stamatis
+ *  @author Nikos Houssos
+ */
 public abstract class AbstractModifier implements ProcessingStep {
+    /**
+     * The name of the modifier. Can be used for logging.
+     */
     private String name;
 
+    /**
+     * Sets the modifier's name.
+     *
+     * @param name The name of the modifier
+     */
     public AbstractModifier(String name) {
         this.name = name;
     }
 
+    /**
+     * Executes this {@link ProcessingStep}.
+     * <br>
+     * <br>
+     * For each {@link Record} contained in the {@link RecordSet}
+     * given as argument, converts it to {@link MutableRecord} calls
+     * {@link AbstractModifier#modify}, and adds the modified record
+     * in the return result.
+     *
+     * @see ProcessingStep#execute
+     *
+     * @param recs The initial set of records
+     * @return     A {@link RecordSet} containing the modified records
+     */
     @Override
     public RecordSet execute(RecordSet recs) {
         RecordSet ret = new RecordSet();
@@ -52,10 +87,23 @@ public abstract class AbstractModifier implements ProcessingStep {
         return recs;
     }
 
+    /**
+     * Gets this modifier's user defined name.
+     *
+     * @return The name of the modifier
+     */
     @Override
     public String getName() {
         return name;
     }
 
+    /**
+     * Abstract method that modifies the {@link MutableRecord} given
+     * as argument. This method should be overriden by the user that
+     * creates her own modifier.
+     *
+     * @param rec The record to be modified
+     * @return    The modified record
+     */
     public abstract Record modify(MutableRecord rec);
 }
