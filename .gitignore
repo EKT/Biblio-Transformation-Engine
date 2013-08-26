@@ -7,4 +7,6 @@ target/
 bin
 
 *.log
-/documentation.org
+/doc/manual/doc_notes.org
+/doc/manual/Manual.pdf
+/doc/manual/Manual.tex

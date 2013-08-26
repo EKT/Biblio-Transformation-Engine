@@ -1,0 +1,90 @@
+# Copyright (c) 2007-2013, National Documentation Centre (EKT, www.ekt.gr)
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+
+#     Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+
+#     Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in
+#     the documentation and/or other materials provided with the
+#     distribution.
+
+#     Neither the name of the National Documentation Centre nor the
+#     names of its contributors may be used to endorse or promote
+#     products derived from this software without specific prior written
+#     permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+#+TITLE: Biblio Transformation Engine (BTE) v0.9 Architecture Notes
+#+LaTeX_CLASS: no-part-report
+#+LaTeX_CLASS_OPTIONS: [a4paper, openright]
+#+AUTHOR: Panagiotis Koutsourakis <kutsurak@ekt.gr> \and Konstantinos Stamatis <kstamatis@ekt.gr> \and Nikos Houssos <nhoussos@ekt.gr>
+
+* Introduction
+  The Biblio Transformation Engine (BTE) is a software framework,
+  designed to convert data between different formats. It is being
+  developed by the Hellenic National Documentation Centre
+  (http://www.ekt.gr).
+
+  An earlier version of this library (0.8 specificaly) has been
+  integrated into DSpace (http://www.dspace.org), in order to
+  facilitate the mass import of metadata records from various sources
+  (Endnote, BibTex, RIS, TSV, CSV) into DSpace installations (see 
+  [[https://wiki.duraspace.org/pages/viewpage.action?pageId=32481931][this page]] for more info).
+
+  This document describes the version 0.9 of BTE, that differs
+  significantly from its predecessors, in an effort to make it more
+  modular and avoid the need for code duplication when extending the system.
+
+** Concepts
+   Each run of the BTE executes three distinct steps:
+
+   1. Input loading
+   2. Data transformation
+   3. Output generation
+
+   In the heart of BTE there is the concept of the /record/. Each
+   record is considered to be a list of key-value pairs[fn:records].
+
+   In the first step an input loader reads data from the data source
+   and creates a set of records that are then passed on to the 
+
+   The transformation process allows the use of /filters/ and
+   /modifiers/, that affect respectively the contents of the /record
+   set/ globally and each record individually.
+
+** Design goals
+
+
+[fn:records] A key can actually be associated with multiple values.
+
+
+* Description of the architecture
+  The UML class diagram of the system is shown in figure
+  \ref{fig:uml-class-diagram}. 
+
+  #+CAPTION:    The UML class diagram of BTE v0.9
+  #+LABEL:      fig:uml-class-diagram
+  #+ATTR_LaTeX: width=5cm
+  [[./images/new_bte_0.9.png]]
+
+  - Data loading spec
+  - Dependency injection (spring)
+  - Design patterns used
+
+* Java implementation
