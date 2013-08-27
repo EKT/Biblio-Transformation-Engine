@@ -38,14 +38,12 @@
 * Introduction
   The Biblio Transformation Engine (BTE) is a software framework,
   designed to convert data between different formats. It is being
-  developed by the Hellenic National Documentation Centre
-  (http://www.ekt.gr).
+  developed by the [[http://www.ekt.gr][Hellenic National Documentation Centre]].
 
   An earlier version of this library (0.8 specificaly) has been
-  integrated into DSpace (http://www.dspace.org), in order to
-  facilitate the mass import of metadata records from various sources
-  (Endnote, BibTex, RIS, TSV, CSV) into DSpace installations (see 
-  [[https://wiki.duraspace.org/pages/viewpage.action?pageId=32481931][this page]] for more info).
+  integrated into [[http://www.dspace.org][DSpace]], in order to facilitate the mass import of
+  metadata records from various sources (Endnote, BibTex, RIS, TSV,
+  CSV) into DSpace installations (see [[https://wiki.duraspace.org/pages/viewpage.action?pageId=32481931][this page]] for more info).
 
   This document describes the version 0.9 of BTE, that differs
   significantly from its predecessors, in an effort to make it more
@@ -61,17 +59,20 @@
    In the heart of BTE there is the concept of the /record/. Each
    record is considered to be a list of key-value pairs[fn:records].
 
-   In the first step an input loader reads data from the data source
-   and creates a set of records that are then passed on to the 
+   In the first step a user defined input loader reads data from the
+   data source[fn:sources] and creates a set of records that are then
+   passed on to the rest of the pipeline.
 
    The transformation process allows the use of /filters/ and
    /modifiers/, that affect respectively the contents of the /record
    set/ globally and each record individually.
 
-** Design goals
-
-
 [fn:records] A key can actually be associated with multiple values.
+[fn:sources] Since the input loader can be user defined, the data
+source can be anything from legacy databases and excel documents, to
+XML documents and OAI-PMH servers etc.
+
+** Design goals
 
 
 * Description of the architecture
@@ -80,11 +81,18 @@
 
   #+CAPTION:    The UML class diagram of BTE v0.9
   #+LABEL:      fig:uml-class-diagram
-  #+ATTR_LaTeX: width=5cm
-  [[./images/new_bte_0.9.png]]
+  [[./images/new_bte_0_9.png]]
 
   - Data loading spec
   - Dependency injection (spring)
   - Design patterns used
 
 * Java implementation
+** Adding a Filter
+
+** Adding a Modifier
+
+** Transformation engine specifics
+
+* Future plans
+
