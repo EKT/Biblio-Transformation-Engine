@@ -77,25 +77,28 @@ public class TransformationEngine {
         boolean end_of_input = false;
 
         current_offset = 0;
-        while((output.size() < spec.getNumberOfRecords() && !end_of_input) || (spec.getNumberOfRecords() == 0 && !end_of_input)) {
+        while((output.size() < spec.getNumberOfRecords() || spec.getNumberOfRecords() == 0) && !end_of_input) {
             RecordSet tmp_recs = null;
-            DataLoadingSpec dls = generateNextLoadingSpec(spec);
-            loading_spec_list.add(dls);
+            DataLoadingSpec dl_spec = generateNextLoadingSpec(spec);
+            loading_spec_list.add(dl_spec);
             try {
-                tmp_recs = dataLoader.getRecords(dls);
+                tmp_recs = dataLoader.getRecords(dl_spec);
             } catch (EmptySourceException e) {
                 logger.info(e.getStackTrace());
-                return null;
+                return null; //Maybe rethrow the exception?
             }
 
-            //The dataloader returned fewer records than requested.
-            //This means that it has reached the end of input.
-            if (tmp_recs.size() < dls.getNumberOfRecords() && dls.getNumberOfRecords() != 0) {
-                end_of_input = true;
-                //break;
-            } else if (tmp_recs.size() > dls.getNumberOfRecords() && dls.getNumberOfRecords() != 0) {
-                //Something went really wrong... throw an exception.
-            } else if (tmp_recs.size() == 0 && dls.getNumberOfRecords() == 0) {
+            //The number of records the data loader returns should be
+            //less than or equal to the number requested.
+            assert tmp_recs.size() <= dl_spec.getNumberOfRecords();
+
+            //The data loader returned fewer records than requested, or
+            //both the requested and the returned number of records is
+            //0. Either of these conditions mean that the data loader
+            //has reached the end of input.
+            if ((tmp_recs.size() < dl_spec.getNumberOfRecords() &&
+                 dl_spec.getNumberOfRecords() != 0) ||
+                (tmp_recs.size() == 0 && dl_spec.getNumberOfRecords() == 0)) {
                 end_of_input = true;
             }
             n_records += tmp_recs.size();
@@ -113,7 +116,6 @@ public class TransformationEngine {
                 //out or remained in the set in order for output to be
                 //generated for spec.n_records records.
                 current_offset = n_records - (kept_records - needed_recs);
-
 
                 Iterator<Record> it = tmp_recs.iterator();
                 RecordSet recs_to_keep = new RecordSet();
@@ -155,6 +157,7 @@ public class TransformationEngine {
         this.workflow = workflow;
     }
 
+    //generates the next data loading spec for the iterative loading
     private DataLoadingSpec generateNextLoadingSpec(TransformationSpec spec) {
         SimpleDataLoadingSpec ret = new SimpleDataLoadingSpec();
 
@@ -167,6 +170,7 @@ public class TransformationEngine {
         return ret;
     }
 
+    //Checks a spec's consistency
     private boolean checkSpec(TransformationSpec spec) {
         // The spec must have EITHER an id OR other info.
         if (spec.getIdentifier() != null &&

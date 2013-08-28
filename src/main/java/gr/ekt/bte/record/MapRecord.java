@@ -43,7 +43,6 @@ import java.util.TreeMap;
 
 
 public class MapRecord implements MutableRecord {
-
     private Map<String, List<Value>> records;
 
     public MapRecord() {

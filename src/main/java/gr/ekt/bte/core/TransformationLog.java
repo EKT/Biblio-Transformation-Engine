@@ -39,7 +39,7 @@ public class TransformationLog {
     private TransformationSpec transformation_spec;
     private List<DataLoadingSpec> loading_spec_list;
     private int first_unexamined_record;
-    private long start_time;
+    private long start_time; //milliseconds
     private long end_time;
     private long transformation_time;
     private List<ProcessingStep> processing_step_list;
@@ -72,6 +72,7 @@ public class TransformationLog {
         return loading_spec_list;
     }
 
+    //Assumes that records are ordered in the source
     public void setFirstUnexaminedRecord(int n_records) {
         first_unexamined_record = n_records;
     }
