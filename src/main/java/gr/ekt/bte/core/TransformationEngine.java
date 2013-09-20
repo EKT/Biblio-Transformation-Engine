@@ -127,6 +127,10 @@ public class TransformationEngine {
             else { //We have less records than we need.
                 current_offset = n_records;
             }
+            if (tmp_recs.size() == 0) {
+                logger.info("Empty record set. Skiping writting");
+                continue;
+            }
             logger.info("Writing result.");
             output.addAll(outputGenerator.generateOutput(tmp_recs));
         }
