@@ -1,70 +1,82 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="12.0">
-  <zoom_level>5</zoom_level>
+  <zoom_level>7</zoom_level>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>260</x>
-      <y>515</y>
-      <w>165</w>
-      <h>90</h>
+      <x>112</x>
+      <y>371</y>
+      <w>490</w>
+      <h>154</h>
     </coordinates>
-    <panel_attributes>gr.ekt.bte.core::RecordSet
+    <panel_attributes>gr.ekt.bte.core::TransformationEngine
 --
--records : List&lt;Record&gt;
+-loader : DataLoader
+-generator : OutputGenerator
+-workflow : Workflow
+_-logger : org.apache.log4j.Logger_
+-int : current_offset
 --
-+RecordSet()
-+RecordSet(records : List&lt;Record&gt;)
-+iterator() : Iterator&lt;Record&gt;
-+addRecord(record : Record) : void
-+getRecords() : List&lt;Record&gt;
-+setRecords(records : List&lt;Record&gt;) : void
-+size() : int
-+addAll(other_records RecordSet) : void</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Class</type>
-    <coordinates>
-      <x>865</x>
-      <y>735</y>
-      <w>275</w>
-      <h>105</h>
-    </coordinates>
-    <panel_attributes>gr.ekt.bte.record::MapRecord
---
--records : Map&lt;String, List&lt;Value&gt; &gt;
---
-+getValues(field : String) : List&lt;Value&gt;
-+makeMutable() : MutableRecord
-+isMutable() : boolean
-+addField(field : String, List&lt;Value&gt;) : boolean
-+addValue(field : String, value : Value) : boolean
-+removeField(field : String) : boolean
-+removeValue(field : String, value : Value) : boolean
-+updateField(field : String, value : List&lt;Value&gt;) : boolean
-+updateValue(field : String, old_value : Value, new_value: Value) : boolean
++TransformationEngine(loader : DataLoader, generator : OutputGenerator, workflow : Workflow)
++transform(spec:TransformationSpec) : TransformationResult
++setDataLoader(dataLoader : DataLoader) : void
++setOutputGenerator(outputGenerator : OutputGenerator) : void
++setWorkflow(workflow : Wokflow) : void
+-generateNextLoadingSpec(spec : TransformationSpec) : DataLoadingSpec
+-checkSpec(spec : TransformationSpec) : boolean
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>125</x>
-      <y>800</y>
-      <w>44</w>
-      <h>74</h>
+      <x>1393</x>
+      <y>952</y>
+      <w>34</w>
+      <h>90</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>15;15;15;65;35;65</additional_attributes>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>21;21;21;77</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>581</x>
+      <y>378</y>
+      <w>202</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+workflow&gt;
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>21;35;189;35</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1239</x>
+      <y>658</y>
+      <w>245</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>/gr.ekt.bte.core::AbstractFilter/
+--
+-name : String
+--
++execute(records : RecordSet) : RecordSet
++getName() : String
+/+isIncluded(record : Record) : boolean/
+bg=orange</panel_attributes>
+    <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>0</x>
-      <y>675</y>
-      <w>195</w>
-      <h>45</h>
+      <y>945</y>
+      <w>273</w>
+      <h>63</h>
     </coordinates>
     <panel_attributes>&lt;&lt;Interface&gt;&gt;
 gr.ekt.bte.core::DataLoader
@@ -77,76 +89,160 @@ bg=light_gray</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>410</x>
-      <y>540</y>
-      <w>339</w>
-      <h>35</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;-
-records&gt;
-m1=1
-m2=*</panel_attributes>
-    <additional_attributes>15;25;330;25</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>95</x>
-      <y>705</y>
-      <w>24</w>
-      <h>69</h>
+      <x>252</x>
+      <y>959</y>
+      <w>90</w>
+      <h>34</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>15;15;15;60</additional_attributes>
+    <additional_attributes>21;21;77;21</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>855</x>
-      <y>300</y>
-      <w>55</w>
-      <h>79</h>
+      <x>329</x>
+      <y>560</y>
+      <w>104</w>
+      <h>174</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;-
-process&gt;
-m1=0
-m2=*</panel_attributes>
-    <additional_attributes>30;15;30;70</additional_attributes>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>21;21;91;161</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>175</x>
+      <y>1120</y>
+      <w>62</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;21;21;91;49;91</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>785</x>
-      <y>370</y>
-      <w>190</w>
-      <h>50</h>
+      <x>602</x>
+      <y>1043</y>
+      <w>210</w>
+      <h>77</h>
     </coordinates>
     <panel_attributes>&lt;&lt;Interface&gt;&gt;
-gr.ekt.bte.core::ProcessingStep
+gr.ekt.bte.core::Value
 --
-bg=light_gray
-+execute(records : RecordSet) : RecordSet
-+getName() : String</panel_attributes>
++getAsString() : String
++equals(o : Object) : boolean
+bg=light_gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>770</x>
+      <y>343</y>
+      <w>287</w>
+      <h>91</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+gr.ekt.bte.core::Workflow
+--
++run(records : Recordset) : RecordSet
++addStepAtEnd(step : ProcessingStep) : void
++addStepAtBeginning(step : ProcessingStep) : void
++setProcess(process : List&lt;ProcessingStep&gt;) : void
++getProcess() : List&lt;ProcessingStep&gt;
+bg=light_gray</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>105</x>
-      <y>800</y>
-      <w>64</w>
-      <h>139</h>
+      <x>147</x>
+      <y>1120</y>
+      <w>90</w>
+      <h>195</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>15;15;15;130;55;130</additional_attributes>
+    <additional_attributes>21;21;21;182;77;182</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>865</x>
-      <y>615</y>
-      <w>275</w>
-      <h>80</h>
+      <x>987</x>
+      <y>658</y>
+      <w>245</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>/gr.ekt.bte::AbstractModifier/
+--
+-name : String
+--
++execute(records : RecordSet) : RecordSet
++getName() : String
+/+modify(record : MutableRecord) : Record/
+bg=orange</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>868</y>
+      <w>413</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+gr.ekt.bte.core::OutputGenerator
+--
++generateOutput(records : RecordSet) : List&lt;String&gt;
++generateOutput(records : RecordSet, spec : DataOutputSpec) : List&lt;String&gt;
+bg=light_gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1106</x>
+      <y>343</y>
+      <w>273</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>gr.ekt.bte.core::LinearWorkflow
+--
+-process : List&lt;ProcessingStep&gt;
+--
++run(records : Recordset) : RecordSet
++addStepAtEnd(step : ProcessingStep) : void
++addStepAtBeginning(step : ProcessingStep) : void
++setProcess(process : List&lt;ProcessingStep&gt;) : void
++getProcess() : List&lt;ProcessingStep&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>224</x>
+      <y>1162</y>
+      <w>301</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>gr.ekt.bte.dataloader::CSVDataLoader
+--
+-records : RecordSet
+--
++CSVDataLoader(filename : String)
++getRecords() : RecordSet
++getRecords(spec : DataLoadingSpec) : RecordSet
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1211</x>
+      <y>861</y>
+      <w>385</w>
+      <h>112</h>
     </coordinates>
     <panel_attributes>&lt;&lt;Interface&gt;&gt;
 gr.ekt.bte.core::MutableRecord
@@ -163,63 +259,34 @@ bg=light_gray</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>885</x>
-      <y>470</y>
-      <w>175</w>
-      <h>50</h>
+      <x>112</x>
+      <y>273</y>
+      <w>392</w>
+      <h>91</h>
     </coordinates>
-    <panel_attributes>/gr.ekt.bte.core::AbstractFilter/
+    <panel_attributes>gr.ekt.bte.core::TransformationResult
 --
--name : String
+-last_log : TransformationLog
+-output : List&lt;String&gt;
 --
-+execute(records : RecordSet) : RecordSet
-+getName() : String
-/+isIncluded(record : Record) : boolean/
-bg=orange</panel_attributes>
++TransformationResult(log : TransformationLog, output : List&lt;String&gt;)
++getLog() : TransformationLog
++getOutput() : List&lt;String&gt;</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>705</x>
-      <y>470</y>
-      <w>175</w>
-      <h>50</h>
+      <x>224</x>
+      <y>1253</y>
+      <w>301</w>
+      <h>84</h>
     </coordinates>
-    <panel_attributes>/gr.ekt.bte::AbstractModifier/
---
--name : String
---
-+execute(records : RecordSet) : RecordSet
-+getName() : String
-/+modify(record : MutableRecord) : Record/
-bg=orange</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>880</x>
-      <y>565</y>
-      <w>129</w>
-      <h>59</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>15;15;120;50</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Class</type>
-    <coordinates>
-      <x>160</x>
-      <y>830</y>
-      <w>215</w>
-      <h>60</h>
-    </coordinates>
-    <panel_attributes>gr.ekt.bte.dataloader::CSVDataLoader
+    <panel_attributes>gr.ekt.bte.dataloader::XPathDataLoader
 --
 -records : RecordSet
 --
-+CSVDataLoader(filename : String)
++XPathDataLoader(filename : String, xpath_spec : String)
 +getRecords() : RecordSet
 +getRecords(spec : DataLoadingSpec) : RecordSet
 </panel_attributes>
@@ -228,21 +295,41 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>700</x>
-      <y>565</y>
-      <w>149</w>
-      <h>59</h>
+      <x>791</x>
+      <y>1057</y>
+      <w>153</w>
+      <h>34</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>140;15;15;50</additional_attributes>
+    <additional_attributes>21;21;140;21</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>485</x>
+      <x>749</x>
+      <y>861</y>
+      <w>455</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>gr.ekt.bte.record::XPathRecord
+--
+-doc : org.w3c.dom.Document
+-xpath_map : Map&lt;String, javax.xml.xpath.XPathExpression&gt;
+_-logger : org.apache.log4j.Logger_
+--
++XPathRecord(doc : org.w3c.dom.Document, xpath_string_map : Map&lt;String, String&gt;)
++getValues(field : String) : List&lt;Value&gt;
++makeMutable() : MutableRecord
++isMutable() : boolean</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>679</x>
       <y>0</y>
-      <w>280</w>
-      <h>215</h>
+      <w>392</w>
+      <h>301</h>
     </coordinates>
     <panel_attributes>gr.ekt.bte.core::TransformationLog
 --
@@ -277,63 +364,34 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>415</x>
-      <y>270</y>
-      <w>144</w>
-      <h>35</h>
+      <x>1099</x>
+      <y>567</y>
+      <w>139</w>
+      <h>104</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;-
-workflow&gt;
-m1=1
-m2=1</panel_attributes>
-    <additional_attributes>15;25;135;25</additional_attributes>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>126;21;21;91</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>550</x>
-      <y>245</y>
-      <w>205</w>
-      <h>65</h>
+      <x>287</x>
+      <y>546</y>
+      <w>126</w>
+      <h>35</h>
     </coordinates>
     <panel_attributes>&lt;&lt;Interface&gt;&gt;
-gr.ekt.bte.core::Workflow
---
-+run(records : Recordset) : RecordSet
-+addStepAtEnd(step : ProcessingStep) : void
-+addStepAtBeginning(step : ProcessingStep) : void
-+setProcess(process : List&lt;ProcessingStep&gt;) : void
-+getProcess() : List&lt;ProcessingStep&gt;
+Iterable&lt;Record&gt;
 bg=light_gray</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>535</x>
-      <y>615</y>
-      <w>325</w>
-      <h>70</h>
-    </coordinates>
-    <panel_attributes>gr.ekt.bte.record::XPathRecord
---
--doc : org.w3c.dom.Document
--xpath_map : Map&lt;String, javax.xml.xpath.XPathExpression&gt;
-_-logger : org.apache.log4j.Logger_
---
-+XPathRecord(doc : org.w3c.dom.Document, xpath_string_map : Map&lt;String, String&gt;)
-+getValues(field : String) : List&lt;Value&gt;
-+makeMutable() : MutableRecord
-+isMutable() : boolean</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Class</type>
-    <coordinates>
-      <x>80</x>
+      <x>112</x>
       <y>0</y>
-      <w>400</w>
-      <h>190</h>
+      <w>560</w>
+      <h>266</h>
     </coordinates>
     <panel_attributes>gr.ekt.bte.core::TransformationSpec
 --
@@ -362,159 +420,63 @@ _-logger : org.apache.log4j.Logger_
     <additional_attributes/>
   </element>
   <element>
-    <type>com.umlet.element.Relation</type>
+    <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>785</x>
-      <y>405</y>
-      <w>99</w>
-      <h>74</h>
+      <x>1099</x>
+      <y>518</y>
+      <w>266</w>
+      <h>70</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>90;15;15;65</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>740</x>
-      <y>265</y>
-      <w>59</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>15;15;50;15</additional_attributes>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+gr.ekt.bte.core::ProcessingStep
+--
+bg=light_gray
++execute(records : RecordSet) : RecordSet
++getName() : String</panel_attributes>
+    <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>160</x>
-      <y>960</y>
-      <w>215</w>
-      <h>60</h>
+      <x>1211</x>
+      <y>1029</y>
+      <w>385</w>
+      <h>147</h>
     </coordinates>
-    <panel_attributes>gr.ekt.bte.dataloader::XMLDirectoryDataLoader
+    <panel_attributes>gr.ekt.bte.record::MapRecord
 --
--xpath_string_map : Map&lt;String, String&gt;
-_-logger : org.apache.log4j.Logger_
+-records : Map&lt;String, List&lt;Value&gt; &gt;
 --
-+CSVDataLoader(filename : String)
-+getRecords() : RecordSet
-+getRecords(spec : DataLoadingSpec) : RecordSet
++getValues(field : String) : List&lt;Value&gt;
++makeMutable() : MutableRecord
++isMutable() : boolean
++addField(field : String, List&lt;Value&gt;) : boolean
++addValue(field : String, value : Value) : boolean
++removeField(field : String) : boolean
++removeValue(field : String, value : Value) : boolean
++updateField(field : String, value : List&lt;Value&gt;) : boolean
++updateValue(field : String, old_value : Value, new_value: Value) : boolean
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <type>com.umlet.element.Class</type>
+    <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>0</x>
-      <y>765</y>
-      <w>225</w>
-      <h>50</h>
+      <x>1232</x>
+      <y>791</y>
+      <w>181</w>
+      <h>83</h>
     </coordinates>
-    <panel_attributes>/gr.ekt.bte.dataloader::FileDataLoader/
---
-#filename : String
---
-FileDataLoader(filename : String)
-/+getRecords : RecordSet/
-/+getRecords(spec : DataLoadingSpec) : RecordSet/
-bg=orange</panel_attributes>
-    <additional_attributes/>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>21;21;168;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>0</x>
-      <y>620</y>
-      <w>295</w>
-      <h>50</h>
-    </coordinates>
-    <panel_attributes>&lt;&lt;Interface&gt;&gt;
-gr.ekt.bte.core::OutputGenerator
---
-+generateOutput(records : RecordSet) : List&lt;String&gt;
-+generateOutput(records : RecordSet, spec : DataOutputSpec) : List&lt;String&gt;
-bg=light_gray</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>565</x>
-      <y>755</y>
-      <w>109</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>15;15;100;15</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Class</type>
-    <coordinates>
-      <x>80</x>
-      <y>265</y>
-      <w>350</w>
-      <h>110</h>
-    </coordinates>
-    <panel_attributes>gr.ekt.bte.core::TransformationEngine
---
--loader : DataLoader
--generator : OutputGenerator
--workflow : Workflow
-_-logger : org.apache.log4j.Logger_
--int : current_offset
---
-+TransformationEngine(loader : DataLoader, generator : OutputGenerator, workflow : Workflow)
-+transform(spec:TransformationSpec) : TransformationResult
-+setDataLoader(dataLoader : DataLoader) : void
-+setOutputGenerator(outputGenerator : OutputGenerator) : void
-+setWorkflow(workflow : Wokflow) : void
--generateNextLoadingSpec(spec : TransformationSpec) : DataLoadingSpec
--checkSpec(spec : TransformationSpec) : boolean
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Class</type>
-    <coordinates>
-      <x>205</x>
-      <y>390</y>
-      <w>90</w>
-      <h>25</h>
-    </coordinates>
-    <panel_attributes>&lt;&lt;Interface&gt;&gt;
-Iterable&lt;Record&gt;
-bg=light_gray</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>235</x>
-      <y>400</y>
-      <w>74</w>
-      <h>124</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>15;15;65;115</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>180</x>
-      <y>685</y>
-      <w>64</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>15;15;55;15</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Class</type>
-    <coordinates>
-      <x>0</x>
-      <y>565</y>
-      <w>210</w>
-      <h>45</h>
+      <y>791</y>
+      <w>294</w>
+      <h>63</h>
     </coordinates>
     <panel_attributes>&lt;&lt;Interface&gt;&gt;
 gr.ekt.bte.core::DataOutputSpec
@@ -525,10 +487,27 @@ bg=light_gray</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
+      <x>931</x>
+      <y>1043</y>
+      <w>259</w>
+      <h>77</h>
+    </coordinates>
+    <panel_attributes>gr.ekt.bte.core::StringValue
+--
+-value : String
+--
++StringValue(value : String)
++getAsString() : String
++equals(o : Object) : boolean</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
       <x>0</x>
-      <y>480</y>
-      <w>210</w>
-      <h>80</h>
+      <y>672</y>
+      <w>294</w>
+      <h>112</h>
     </coordinates>
     <panel_attributes>&lt;&lt;Interface&gt;&gt;
 gr.ekt.bte.core::DataLoadingSpec
@@ -543,12 +522,51 @@ bg=light_gray</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>574</x>
+      <y>756</y>
+      <w>475</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+records&gt;
+m1=1
+m2=*</panel_attributes>
+    <additional_attributes>21;35;462;35</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1197</x>
+      <y>420</y>
+      <w>82</w>
+      <h>111</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+process&gt;
+m1=0
+m2=*</panel_attributes>
+    <additional_attributes>42;21;42;98</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>980</x>
+      <y>791</y>
+      <w>209</w>
+      <h>83</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>196;21;21;70</additional_attributes>
+  </element>
+  <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>740</x>
-      <y>530</y>
-      <w>265</w>
-      <h>50</h>
+      <x>1036</x>
+      <y>742</y>
+      <w>371</w>
+      <h>70</h>
     </coordinates>
     <panel_attributes>&lt;&lt;Interface&gt;&gt;
 gr.ekt.bte.core::Record
@@ -562,120 +580,40 @@ bg=light_gray</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>790</x>
-      <y>245</y>
-      <w>195</w>
-      <h>70</h>
+      <x>224</x>
+      <y>1344</y>
+      <w>301</w>
+      <h>84</h>
     </coordinates>
-    <panel_attributes>gr.ekt.bte.core::LinearWorkflow
+    <panel_attributes>gr.ekt.bte.dataloader::XMLDirectoryDataLoader
 --
--process : List&lt;ProcessingStep&gt;
+-xpath_string_map : Map&lt;String, String&gt;
+_-logger : org.apache.log4j.Logger_
 --
-+run(records : Recordset) : RecordSet
-+addStepAtEnd(step : ProcessingStep) : void
-+addStepAtBeginning(step : ProcessingStep) : void
-+setProcess(process : List&lt;ProcessingStep&gt;) : void
-+getProcess() : List&lt;ProcessingStep&gt;</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Class</type>
-    <coordinates>
-      <x>665</x>
-      <y>745</y>
-      <w>185</w>
-      <h>55</h>
-    </coordinates>
-    <panel_attributes>gr.ekt.bte.core::StringValue
---
--value : String
---
-+StringValue(value : String)
-+getAsString() : String
-+equals(o : Object) : boolean</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>885</x>
-      <y>405</y>
-      <w>84</w>
-      <h>74</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>15;15;75;65</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Class</type>
-    <coordinates>
-      <x>160</x>
-      <y>895</y>
-      <w>215</w>
-      <h>60</h>
-    </coordinates>
-    <panel_attributes>gr.ekt.bte.dataloader::XPathDataLoader
---
--records : RecordSet
---
-+XPathDataLoader(filename : String, xpath_spec : String)
++CSVDataLoader(filename : String)
 +getRecords() : RecordSet
 +getRecords(spec : DataLoadingSpec) : RecordSet
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <type>com.umlet.element.Class</type>
-    <coordinates>
-      <x>430</x>
-      <y>745</y>
-      <w>150</w>
-      <h>55</h>
-    </coordinates>
-    <panel_attributes>&lt;&lt;Interface&gt;&gt;
-gr.ekt.bte.core::Value
---
-+getAsString() : String
-+equals(o : Object) : boolean
-bg=light_gray</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Class</type>
-    <coordinates>
-      <x>80</x>
-      <y>195</y>
-      <w>280</w>
-      <h>65</h>
-    </coordinates>
-    <panel_attributes>gr.ekt.bte.core::TransformationResult
---
--last_log : TransformationLog
--output : List&lt;String&gt;
---
-+TransformationResult(log : TransformationLog, output : List&lt;String&gt;)
-+getLog() : TransformationLog
-+getOutput() : List&lt;String&gt;</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>995</x>
-      <y>680</y>
-      <w>24</w>
-      <h>64</h>
+      <x>1036</x>
+      <y>371</y>
+      <w>83</w>
+      <h>34</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>15;15;15;55</additional_attributes>
+    <additional_attributes>21;21;70;21</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>235</x>
-      <y>675</y>
-      <w>220</w>
-      <h>50</h>
+      <x>329</x>
+      <y>945</y>
+      <w>308</w>
+      <h>70</h>
     </coordinates>
     <panel_attributes>gr.ekt.bte.dataloader::DSpaceDataLoader
 --
@@ -684,6 +622,68 @@ bg=light_gray</panel_attributes>
 +DSpaceDataLoader()
 +getRecords() : RecordSet
 +getRecords(spec : DataLoadingSpec) : RecordSet</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>133</x>
+      <y>987</y>
+      <w>34</w>
+      <h>97</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>21;21;21;84</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1239</x>
+      <y>567</y>
+      <w>118</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>21;21;105;91</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>364</x>
+      <y>721</y>
+      <w>231</w>
+      <h>126</h>
+    </coordinates>
+    <panel_attributes>gr.ekt.bte.core::RecordSet
+--
+-records : List&lt;Record&gt;
+--
++RecordSet()
++RecordSet(records : List&lt;Record&gt;)
++iterator() : Iterator&lt;Record&gt;
++addRecord(record : Record) : void
++getRecords() : List&lt;Record&gt;
++setRecords(records : List&lt;Record&gt;) : void
++size() : int
++addAll(other_records RecordSet) : void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>1071</y>
+      <w>315</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>/gr.ekt.bte.dataloader::FileDataLoader/
+--
+#filename : String
+--
+FileDataLoader(filename : String)
+/+getRecords : RecordSet/
+/+getRecords(spec : DataLoadingSpec) : RecordSet/
+bg=orange</panel_attributes>
     <additional_attributes/>
   </element>
 </diagram>

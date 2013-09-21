@@ -57,7 +57,7 @@ public class XMLDirectoryDataLoader extends FileDataLoader {
 
     public XMLDirectoryDataLoader(String filename, Map<String, String> xpath_string_map) {
         super(filename);
-        xpath_string_map = xpath_string_map;
+        this.xpath_string_map = xpath_string_map;
     }
 
     class XmlFilter implements FilenameFilter {

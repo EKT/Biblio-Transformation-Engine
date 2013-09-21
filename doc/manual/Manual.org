@@ -1,39 +1,14 @@
-# Copyright (c) 2007-2013, National Documentation Centre (EKT, www.ekt.gr)
-# All rights reserved.
-
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are
-# met:
-
-#     Redistributions of source code must retain the above copyright
-#     notice, this list of conditions and the following disclaimer.
-
-#     Redistributions in binary form must reproduce the above copyright
-#     notice, this list of conditions and the following disclaimer in
-#     the documentation and/or other materials provided with the
-#     distribution.
-
-#     Neither the name of the National Documentation Centre nor the
-#     names of its contributors may be used to endorse or promote
-#     products derived from this software without specific prior written
-#     permission.
-
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-# HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 #+TITLE: Biblio Transformation Engine version 0.9
+#+OPTIONS: H:5
 #+LaTeX_CLASS: no-part-report
 #+LaTeX_CLASS_OPTIONS: [a4paper, twoside, openright]
 #+AUTHOR: Panagiotis Koutsourakis <kutsurak@ekt.gr>, \and Konstantinos Stamatis <kstamatis@ekt.gr>, \and Nikos Houssos <nhoussos@ekt.gr>
+
+This manual is under the Creative Commons Attribution-Share Alike 3.0
+Unported license (CC-BY-SA 3.0). This means that you are free to
+share and adapt it, provided that you give credit to the authors, and
+that any derivative works are under the same or a similar license.
+See [[http://creativecommons.org/licenses/by-sa/3.0/][here]] for a human readable summary and [[http://creativecommons.org/licenses/by-sa/3.0/legalcode][here]] for the legalese. 
 
 * Introduction
   The Biblio Transformation Engine (BTE) is a software framework,
@@ -111,9 +86,12 @@
   #+LABEL:      fig:uml-class-diagram
   [[./images/bte_v0_9_class_diagram.png]]
 
-  - Data loading spec
-  - Dependency injection (spring)
-  - Design patterns used
+  As mentioned in section [[Functional overview]] the main idea of the
+  system is that it reads a number of records from a data source,
+  applies filters and modifiers on them, and prepares them for
+  output. In order to achieve the first goal, that the system should
+  be easily extensible, we have to abstract as much as possible
+  each of these operations.
 
 * Java implementation
 ** Transformation engine specifics

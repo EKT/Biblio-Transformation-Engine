@@ -33,6 +33,13 @@
  */
 package gr.ekt.bte.exceptions;
 
+/**
+ * An exception thrown when the {@link
+ * gr.ekt.bte.core.TransformationSpec} provided to the {@link
+ * gr.ekt.bte.core.TransformationEngine} is in an inconsistent state.
+ * For instance if the TransformationSpec requests a record by id, but
+ * specifies that it needs more than one record.
+ */
 public class BadTransformationSpec extends Exception {
     public BadTransformationSpec() {
         super();
@@ -41,4 +48,6 @@ public class BadTransformationSpec extends Exception {
     public BadTransformationSpec(String message) {
         super(message);
     }
+
+    private static final long serialVersionUID = 2L;
 }

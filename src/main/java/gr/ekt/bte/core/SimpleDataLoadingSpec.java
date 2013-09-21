@@ -75,7 +75,7 @@ public class SimpleDataLoadingSpec implements DataLoadingSpec {
     }
 
     public void setDataSetName(String set_name) {
-        this.data_set_name = data_set_name;
+        this.data_set_name = set_name;
     }
 
     @Override

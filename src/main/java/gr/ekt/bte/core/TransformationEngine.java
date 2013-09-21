@@ -102,6 +102,10 @@ public class TransformationEngine {
                 end_of_input = true;
             }
             n_records += tmp_recs.size();
+            if (tmp_recs.size() == 0) {
+                logger.info("Loaded 0 records. Skipping the rest of the workflow.");
+                continue;
+            }
             logger.info("Loaded " + tmp_recs.size() + " records. Running workflow.");
             tmp_recs = workflow.run(tmp_recs);
             kept_records = tmp_recs.size();
