@@ -153,12 +153,33 @@ public class TransformationEngine {
         return res;
     }
 
+    /**
+     * @return the dataLoader
+     */
+    public DataLoader getDataLoader() {
+        return dataLoader;
+    }
+
     public void setDataLoader(DataLoader dataLoader) {
         this.dataLoader = dataLoader;
     }
 
+    /**
+     * @return the outputGenerator
+     */
+    public OutputGenerator getOutputGenerator() {
+        return outputGenerator;
+    }
+
     public void setOutputGenerator(OutputGenerator outputGenerator) {
         this.outputGenerator = outputGenerator;
+    }
+
+    /**
+     * @return the workflow
+     */
+    public Workflow getWorkflow() {
+        return workflow;
     }
 
     public void setWorkflow(Workflow workflow) {
