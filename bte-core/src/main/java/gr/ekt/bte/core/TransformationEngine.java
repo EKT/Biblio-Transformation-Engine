@@ -33,13 +33,15 @@
  */
 package gr.ekt.bte.core;
 
-import org.apache.log4j.Logger;
-import gr.ekt.bte.exceptions.EmptySourceException;
 import gr.ekt.bte.exceptions.BadTransformationSpec;
+import gr.ekt.bte.exceptions.MalformedSourceException;
+
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.List;
+
+import org.apache.log4j.Logger;
 
 public class TransformationEngine {
     private DataLoader dataLoader;
@@ -83,7 +85,7 @@ public class TransformationEngine {
             loading_spec_list.add(dl_spec);
             try {
                 tmp_recs = dataLoader.getRecords(dl_spec);
-            } catch (EmptySourceException e) {
+            } catch (MalformedSourceException e) {
                 logger.info(e.getStackTrace());
                 return null; //Maybe rethrow the exception?
             }

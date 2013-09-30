@@ -36,7 +36,7 @@ package gr.ekt.bte.exceptions;
 /**
  *
  */
-public class EmptySourceException extends Exception {
+public class EmptySourceException extends MalformedSourceException {
 
     public EmptySourceException(String message) {
         super(message);

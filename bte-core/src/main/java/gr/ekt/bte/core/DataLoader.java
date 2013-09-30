@@ -33,7 +33,7 @@
  */
 package gr.ekt.bte.core;
 
-import gr.ekt.bte.exceptions.EmptySourceException;
+import gr.ekt.bte.exceptions.MalformedSourceException;
 
 /**
  * Provides the interface for the loader of data from their original
@@ -54,7 +54,7 @@ public interface DataLoader {
      * @throws EmptySourceException If the data source does not
      * contain any data
      */
-    public RecordSet getRecords() throws EmptySourceException;
+    public RecordSet getRecords() throws MalformedSourceException;
 
     /**
      * Loads records from the data source based on criteria defined by
@@ -75,5 +75,5 @@ public interface DataLoader {
      * @throws EmptySourceException If the source does not contain any
      * data
      */
-    public RecordSet getRecords(DataLoadingSpec spec) throws EmptySourceException;
+    public RecordSet getRecords(DataLoadingSpec spec) throws MalformedSourceException;
 }
