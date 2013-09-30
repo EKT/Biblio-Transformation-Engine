@@ -107,4 +107,10 @@ public class XPathRecord implements Record {
     public boolean isMutable() {
         return false;
     }
+
+    @Override
+    public boolean hasField(String field) {
+        //TODO Probably not the most efficient way to check
+        return getValues(field) != null;
+    }
 }

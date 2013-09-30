@@ -71,4 +71,6 @@ public interface Record {
        @return <code>true</code> if the record is mutable
      */
     public boolean isMutable();
+
+    public boolean hasField(String field);
 }

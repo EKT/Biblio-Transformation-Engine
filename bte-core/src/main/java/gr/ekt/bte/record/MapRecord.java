@@ -134,4 +134,8 @@ public class MapRecord implements MutableRecord {
         return true;
     }
 
+    @Override
+    public boolean hasField(String field) {
+        return getValues(field) != null;
+    }
 }
