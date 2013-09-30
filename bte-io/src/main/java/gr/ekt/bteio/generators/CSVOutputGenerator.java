@@ -18,12 +18,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 
-public class CSVGenerator implements OutputGenerator {
+public class CSVOutputGenerator implements OutputGenerator {
     private List<String> m_fields;
     private CSVWriter m_writer;
-    private static Logger m_logger = Logger.getLogger(CSVGenerator.class);
+    private static Logger m_logger = Logger.getLogger(CSVOutputGenerator.class);
 
-    public CSVGenerator(String filename, List<String> fields) throws FileNotFoundException, IOException {
+    public CSVOutputGenerator(String filename, List<String> fields) throws FileNotFoundException, IOException {
         m_writer = new CSVWriter(new FileWriter(filename));
         m_fields = fields;
     }
