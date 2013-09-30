@@ -23,34 +23,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>gr.ekt.bte</groupId>
       <artifactId>bte-core</artifactId>
       <version>0.9</version>
     </dependency>
-    <!-- <dependency> -->
-    <!--   <groupId>net.sf.opencsv</groupId> -->
-    <!--   <artifactId>opencsv</artifactId> -->
-    <!--   <version>2.3</version> -->
-    <!--   <scope>compile</scope> -->
-    <!-- </dependency> -->
-    <!-- <dependency> -->
-    <!--   <groupId>com.google.code.gson</groupId> -->
-    <!--   <artifactId>gson</artifactId> -->
-    <!--   <version>2.2.4</version> -->
-    <!--   <scope>compile</scope> -->
-    <!-- </dependency> -->
-    <!-- <dependency> -->
-    <!--   <groupId>org</groupId> -->
-    <!--   <artifactId>marc4j</artifactId> -->
-    <!--   <scope>system</scope> -->
-    <!--   <version>2.5</version> -->
-    <!--   <systemPath>${project.basedir}/lib/marc4j_2.5.jar</systemPath> -->
-    <!-- </dependency> -->
   </dependencies>
 </project>
