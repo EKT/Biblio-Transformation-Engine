@@ -37,6 +37,11 @@
       <version>2.2.4</version>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jbibtex</groupId>
+      <artifactId>jbibtex</artifactId>
+      <version>1.0.8</version>
+    </dependency>
   </dependencies>
 
 </project>
