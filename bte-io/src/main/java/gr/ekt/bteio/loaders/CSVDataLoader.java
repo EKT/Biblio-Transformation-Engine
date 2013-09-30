@@ -38,6 +38,7 @@ import gr.ekt.bte.core.RecordSet;
 import gr.ekt.bte.core.StringValue;
 import gr.ekt.bte.dataloader.FileDataLoader;
 import gr.ekt.bte.exceptions.EmptySourceException;
+import gr.ekt.bte.exceptions.MalformedSourceException;
 import gr.ekt.bte.record.MapRecord;
 
 import java.io.FileNotFoundException;
@@ -75,7 +76,7 @@ public class CSVDataLoader extends FileDataLoader {
     }
 
     @Override
-    public RecordSet getRecords() throws EmptySourceException {
+    public RecordSet getRecords() throws MalformedSourceException {
         RecordSet rs = null;
         try {
             String [] next_line;
@@ -92,13 +93,14 @@ public class CSVDataLoader extends FileDataLoader {
             }
         } catch(IOException e) {
             logger_.info(e.getMessage());
+            throw new MalformedSourceException("");
         }
 
         return rs;
     }
 
     @Override
-    public RecordSet getRecords(DataLoadingSpec spec) throws EmptySourceException {
+    public RecordSet getRecords(DataLoadingSpec spec) throws MalformedSourceException {
         //Not using the DataLoadingSpec for the moment
         return getRecords();
     }

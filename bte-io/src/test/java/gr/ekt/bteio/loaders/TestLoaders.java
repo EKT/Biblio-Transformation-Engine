@@ -33,23 +33,42 @@
  */
 package gr.ekt.bteio.loaders;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import gr.ekt.bte.core.DataLoader;
-import gr.ekt.bte.exceptions.EmptySourceException;
+import gr.ekt.bte.core.Record;
+import gr.ekt.bte.core.RecordSet;
+import gr.ekt.bte.exceptions.MalformedSourceException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
-//import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class TestLoaders {
     @Test
-    public void testCreation() {
+    public void testCSVLoader() {
         List<String> fields = new ArrayList<String>();
+        fields.add("title");
+        fields.add("subject");
+        fields.add("language");
+        fields.add("author");
+        fields.add("date");
+        fields.add("id");
+        fields.add("note");
+        fields.add("type");
+
         try {
-            DataLoader dl = new CSVDataLoader("Test", fields);
-        } catch(EmptySourceException e) {
+            DataLoader dl = new CSVDataLoader("src/test/resources/test_data.csv", fields);
+            RecordSet recs = dl.getRecords();
+            assertEquals(2, recs.size());
+            Record rec = recs.getRecords().get(0);
+            for (String fl : fields) {
+                assert(rec.hasField(fl));
+            }
+        } catch(MalformedSourceException e) {
+            fail(e.getMessage());
         }
     }
 }
