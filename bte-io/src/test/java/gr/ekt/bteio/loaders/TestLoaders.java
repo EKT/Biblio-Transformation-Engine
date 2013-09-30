@@ -10,7 +10,7 @@ import java.util.List;
 //import static org.junit.Assert.*;
 import org.junit.Test;
 
-public class TestCSVLoader {
+public class TestLoaders {
     @Test
     public void testCreation() {
         List<String> fields = new ArrayList<String>();
