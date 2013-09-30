@@ -31,7 +31,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package gr.ekt.bte.dataloader;
+package gr.ekt.bteio.loaders;
 
 import java.io.FilenameFilter;
 import java.io.File;
@@ -50,6 +50,7 @@ import org.xml.sax.SAXException;
 import gr.ekt.bte.core.RecordSet;
 import gr.ekt.bte.core.DataLoadingSpec;
 import gr.ekt.bte.record.XPathRecord;
+import gr.ekt.bte.dataloader.FileDataLoader;
 
 public class XMLDirectoryDataLoader extends FileDataLoader {
     private Map<String, String> xpath_string_map;
