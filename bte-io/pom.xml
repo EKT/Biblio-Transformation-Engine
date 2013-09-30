@@ -1,0 +1,56 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>gr.ekt.bte</groupId>
+    <artifactId>bte-parent</artifactId>
+    <version>0.9</version>
+    <relativePath>..</relativePath>
+  </parent>
+
+  <groupId>gr.ekt.bte</groupId>
+  <artifactId>bte-io</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Biblio Transformation Engine :: Input/Output</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <!-- This is the path to the root [dspace-src] directory. -->
+    <root.basedir>${basedir}/..</root.basedir>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>gr.ekt.bte</groupId>
+      <artifactId>bte-core</artifactId>
+      <version>0.9</version>
+    </dependency>
+    <!-- <dependency> -->
+    <!--   <groupId>net.sf.opencsv</groupId> -->
+    <!--   <artifactId>opencsv</artifactId> -->
+    <!--   <version>2.3</version> -->
+    <!--   <scope>compile</scope> -->
+    <!-- </dependency> -->
+    <!-- <dependency> -->
+    <!--   <groupId>com.google.code.gson</groupId> -->
+    <!--   <artifactId>gson</artifactId> -->
+    <!--   <version>2.2.4</version> -->
+    <!--   <scope>compile</scope> -->
+    <!-- </dependency> -->
+    <!-- <dependency> -->
+    <!--   <groupId>org</groupId> -->
+    <!--   <artifactId>marc4j</artifactId> -->
+    <!--   <scope>system</scope> -->
+    <!--   <version>2.5</version> -->
+    <!--   <systemPath>${project.basedir}/lib/marc4j_2.5.jar</systemPath> -->
+    <!-- </dependency> -->
+  </dependencies>
+</project>
