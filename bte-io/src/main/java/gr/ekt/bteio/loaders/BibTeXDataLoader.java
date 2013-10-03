@@ -64,6 +64,12 @@ public class BibTeXDataLoader extends FileDataLoader {
     private Map<String, String> field_map_;
     private FileReader reader_;
 
+    public BibTeXDataLoader() {
+        super();
+        field_map_ = null;
+        reader_ = null;
+    }
+
     public BibTeXDataLoader(String filename, Map<String, String> fields) throws EmptySourceException {
         super(filename);
         field_map_ = fields;
@@ -137,7 +143,10 @@ public class BibTeXDataLoader extends FileDataLoader {
         reader_.close();
     }
 
-    private BibTeXDatabase loadFile() throws IOException, ParseException {
+    private BibTeXDatabase loadFile() throws IOException, ParseException, EmptySourceException {
+        if (reader_ == null) {
+            throw new EmptySourceException("Input file is not open");
+        }
         BibTeXParser parser = new BibTeXParser()
             {
 
@@ -158,5 +167,31 @@ public class BibTeXDataLoader extends FileDataLoader {
             };
 
         return parser.parse(reader_);
+    }
+
+    /**
+     * @return the field_map_
+     */
+    public Map<String, String> getFieldMap() {
+        return field_map_;
+    }
+
+    /**
+     * @param field_map_ the field_map_ to set
+     */
+    public void setFieldMap(Map<String, String> field_map_) {
+        this.field_map_ = field_map_;
+    }
+
+    @Override
+    public void setFilename(String filename) {
+        this.filename = filename;
+
+        try {
+            reader_ = new FileReader(new File(filename));
+        } catch(IOException e) {
+            logger_.info("Problem loading file: " + filename);
+            reader_ = null;
+        }
     }
 }

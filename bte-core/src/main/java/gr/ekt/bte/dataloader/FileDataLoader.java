@@ -38,7 +38,25 @@ import gr.ekt.bte.core.DataLoader;
 public abstract class FileDataLoader implements DataLoader {
     protected String filename;
 
+    public FileDataLoader() {
+        filename = null;
+    }
+
     public FileDataLoader(String filename) {
+        this.filename = filename;
+    }
+
+    /**
+     * @return the filename
+     */
+    public String getFilename() {
+        return filename;
+    }
+
+    /**
+     * @param filename the filename to set
+     */
+    public void setFilename(String filename) {
         this.filename = filename;
     }
 }

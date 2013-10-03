@@ -59,6 +59,12 @@ public class CSVDataLoader extends FileDataLoader {
     private char quote_char_ = '"';
     private String value_separator_ = "\\|\\|";
 
+    public CSVDataLoader() {
+        super();
+        reader_ = null;
+        fields_ = null;
+    }
+
     public CSVDataLoader(String filename, List<String> fields) throws EmptySourceException {
         super(filename);
         fields_ = fields;
@@ -77,6 +83,9 @@ public class CSVDataLoader extends FileDataLoader {
 
     @Override
     public RecordSet getRecords() throws MalformedSourceException {
+        if (reader_ == null) {
+            throw new EmptySourceException("Input file is not open");
+        }
         RecordSet rs = null;
         try {
             String [] next_line;
@@ -116,5 +125,86 @@ public class CSVDataLoader extends FileDataLoader {
         } catch (FileNotFoundException e) {
             throw new EmptySourceException("File " + filename + " not found");
         }
+    }
+
+    @Override
+    public void setFilename(String filename) {
+        this.filename = filename;
+        try {
+            openReader();
+        } catch (EmptySourceException e) {
+            logger_.info("Could not open file " + filename);
+            reader_ = null;
+        }
+    }
+
+    /**
+     * @return the fields_
+     */
+    public List<String> getFields() {
+        return fields_;
+    }
+
+    /**
+     * @param fields_ the fields_ to set
+     */
+    public void setFields(List<String> fields_) {
+        this.fields_ = fields_;
+    }
+
+    /**
+     * @return the skip_lines_
+     */
+    public int getSkipLines() {
+        return skip_lines_;
+    }
+
+    /**
+     * @param skip_lines_ the skip_lines_ to set
+     */
+    public void setSkipLines(int skip_lines_) {
+        this.skip_lines_ = skip_lines_;
+    }
+
+    /**
+     * @return the separator_
+     */
+    public char getSeparator() {
+        return separator_;
+    }
+
+    /**
+     * @param separator_ the separator_ to set
+     */
+    public void setSeparator(char separator_) {
+        this.separator_ = separator_;
+    }
+
+    /**
+     * @return the quote_char_
+     */
+    public char getQuoteChar() {
+        return quote_char_;
+    }
+
+    /**
+     * @param quote_char_ the quote_char_ to set
+     */
+    public void setQuoteChar(char quote_char_) {
+        this.quote_char_ = quote_char_;
+    }
+
+    /**
+     * @return the value_separator_
+     */
+    public String getValueSeparator() {
+        return value_separator_;
+    }
+
+    /**
+     * @param value_separator_ the value_separator_ to set
+     */
+    public void setValueSeparator(String value_separator_) {
+        this.value_separator_ = value_separator_;
     }
 }
