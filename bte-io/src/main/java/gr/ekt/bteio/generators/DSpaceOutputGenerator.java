@@ -54,6 +54,7 @@ import org.apache.log4j.Logger;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonStreamParser;
 
 public class DSpaceOutputGenerator implements OutputGenerator {
@@ -93,35 +94,8 @@ public class DSpaceOutputGenerator implements OutputGenerator {
             ret = createOutput(recs, output_directory_, padding_);
         }
 
-        //Write the generated json to a file for debugging purposes.
-        // try {
-        //     String filename;
-        //     if (spec_ != null) {
-        //         File dir = new File(spec_.getPrefixDir());
-        //         if (!dir.exists())
-        //             dir.mkdir();
-        //         filename = spec_.getPrefixDir() + File.separator + "output.json";
-        //     }
-        //     else {
-        //         File dir = new File(output_directory_);
-        //         if (!dir.exists())
-        //             dir.mkdir();
-        //         filename = output_directory_ + File.separator + "output.json";
-        //     }
-        //     PrintWriter pw = new PrintWriter(new File(filename));
-        //     pw.println("[");
-        //     System.out.println("size = " + ret.size());
-        //     for (int i = 0; i < ret.size(); i++) {
-        //         pw.print(ret.get(i));
-        //         if (i < ret.size() - 1) {
-        //             pw.println(",");
-        //         }
-        //     }
-        //     pw.println("]");
-        //     pw.close();
-        // } catch(FileNotFoundException e) {
-        //     //nothing to see here
-        // }
+        //For debugging
+        writeJsonToFile(ret, "./output.json");
 
         return ret;
     }
@@ -157,11 +131,28 @@ public class DSpaceOutputGenerator implements OutputGenerator {
             JsonArray files = dir.getAsJsonArray("files");
             for (JsonElement file : files) {
                 JsonObject file_object = file.getAsJsonObject();
-                String filename = path + File.separator + file_object.getAsJsonPrimitive("name").getAsString();
+                String filename = file_object.getAsJsonPrimitive("name").getAsString();
+                String abs_filename = path + File.separator + filename;
+                PrintWriter file_writer = null;
                 try {
-                    PrintWriter xml_file = new PrintWriter(new File(filename));
-                    xml_file.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-                    xml_file.println("<dublin_core schema='" + file_object.getAsJsonPrimitive("schema").getAsString() + "'>");
+                    file_writer = new PrintWriter(new File(abs_filename));
+                } catch (FileNotFoundException e) {
+                    logger_.info("Cannot open file " + abs_filename);
+                    continue;
+                }
+                if (filename.equals("contents")) {
+                    JsonArray data = file_object.getAsJsonArray("data");
+                    for (JsonElement contents : data) {
+                        file_writer.println(contents.getAsJsonPrimitive().getAsString());
+                    }
+                }
+                else if (filename.equals("handle")) {
+                    JsonPrimitive data = file_object.getAsJsonPrimitive("data");
+                    file_writer.println(data.getAsString());
+                }
+                else {
+                    file_writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+                    file_writer.println("<dublin_core schema='" + file_object.getAsJsonPrimitive("schema").getAsString() + "'>");
                     JsonArray data = file_object.getAsJsonArray("data");
                     for (JsonElement dc_value : data) {
                         JsonObject value_object = dc_value.getAsJsonObject().getAsJsonObject("dc_value");
@@ -172,13 +163,12 @@ public class DSpaceOutputGenerator implements OutputGenerator {
                             line += " qualifier='" + value_object.getAsJsonPrimitive("qualifier").getAsString() + "'";
                         }
                         line += ">" + value_object.getAsJsonPrimitive("value").getAsString() + "</dc_value>";
-                        xml_file.println(line);
+                        file_writer.println(line);
                     }
-                    xml_file.println("</dublin_core>");
-                    xml_file.close();
-                } catch (FileNotFoundException e) {
-                    logger_.info("Cannot open file " + filename);
+                    file_writer.println("</dublin_core>");
+
                 }
+                file_writer.close();
             }
         }
     }
@@ -189,7 +179,14 @@ public class DSpaceOutputGenerator implements OutputGenerator {
         for (String key : field_map_.keySet()) {
             String elems[] = key.split("\\.");
             if (elems.length == 1) {
-                //TODO Raise an exception.
+                //We allow handle and contents entries
+                if (elems[0].equals("handle") || elems[0].equals("contents")) {
+                    continue;
+                }
+                else {
+                    logger_.info("Field \"" + key + "\" is not a valid dspace field name. Ignoring");
+                    continue;
+                }
             }
 
             if (!namespace_fields.containsKey(elems[0])) {
@@ -267,6 +264,40 @@ public class DSpaceOutputGenerator implements OutputGenerator {
                     elem += ", ";
                 }
             }
+
+            //The contents file contains (optionally) a list of files
+            //to be uploaded as bitstreams one in each line
+            elem += ", {\"name\": \"contents\", \"data\":[";
+            if (field_map_.containsKey("contents")) {
+                List<Value> contents = rec.getValues(field_map_.get("contents"));
+
+                if (contents != null) {
+                    Iterator<Value> val_it = contents.iterator();
+                    while(val_it.hasNext()) {
+                        Value val = val_it.next();
+                        elem += "\"" + val.getAsString() + "\"";
+                        if (val_it.hasNext()) {
+                            elem += ", ";
+                        }
+                    }
+                }
+            }
+            elem += "]"; //closes the contents file data section
+            elem += "}"; //closes the contents file
+
+            //The handle file contains (optionally) the handle that
+            //this item should take.
+            elem += ", {\"name\": \"handle\", \"data\": \"";
+            if (field_map_.containsKey("handle")) {
+                List<Value> handle_list = rec.getValues(field_map_.get("handle"));
+                String handle = "";
+                if (handle_list != null && handle_list.size() > 0) {
+                    Value handle_value = handle_list.get(0);
+                    handle = handle_value.getAsString();
+                }
+                elem += handle;
+            }
+            elem += "\"}"; //closes the handle file
             elem += "]"; //closes the "files" array
             elem += "}"; //closes the "directory" value
             elem += "}"; //closes the initial object
@@ -327,5 +358,24 @@ public class DSpaceOutputGenerator implements OutputGenerator {
 
     public Map<String, String> getFieldMap() {
         return field_map_;
+    }
+
+    private void writeJsonToFile(List<String> json, String filename) {
+        //Write the generated json to a file for debugging purposes.
+        try {
+            PrintWriter pw = new PrintWriter(new File(filename));
+            pw.println("[");
+            System.out.println("size = " + json.size());
+            for (int i = 0; i < json.size(); i++) {
+                pw.print(json.get(i));
+                if (i < json.size() - 1) {
+                    pw.println(",");
+                }
+            }
+            pw.println("]");
+            pw.close();
+        } catch(FileNotFoundException e) {
+            //nothing to see here
+        }
     }
 }
