@@ -63,7 +63,7 @@ public class TransformationEngine {
         this.workflow = workflow;
     }
 
-    public TransformationResult transform(TransformationSpec spec) throws BadTransformationSpec {
+    public TransformationResult transform(TransformationSpec spec) throws BadTransformationSpec, MalformedSourceException {
         if (!checkSpec(spec)) {
             throw new BadTransformationSpec("Bad Spec: " + spec.toString());
         }
@@ -86,8 +86,8 @@ public class TransformationEngine {
             try {
                 tmp_recs = dataLoader.getRecords(dl_spec);
             } catch (MalformedSourceException e) {
-                logger.info(e.getStackTrace());
-                return null; //Maybe rethrow the exception?
+                logger.info(e.getMessage());
+                throw e;
             }
 
             //The number of records the data loader returns should be
