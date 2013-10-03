@@ -1,0 +1,72 @@
+* Introduction
+
+  The biblio transformation engine (BTE) is a java framework developed
+  by the [[http://www.ekt.gr/][Hellenic National Documentation Centre (EKT)]] and consists of
+  programmatic APIs for filtering and modifying records that are
+  retrieved from various types of data sources (eg. databases, files,
+  legacy data sources) as well as for outputing them in appropriate
+  standards formats (eg. database files, txt, xml, Excel). The framework
+  includes independent abstract modules that are executed separately,
+  offering in many cases alternative choices to the user depending of
+  the input data set, the transformation workflow that needs to be
+  executed and the output format that needs to be generated.
+
+  The biblio-transformation-engine is included in the core distribution
+  of the DSpace digital repository platform since version 3.0 and forms
+  the basis of the batch import feature of DSpace (i.e. importing
+  records of various standards bibliographic formats into DSpace
+  repositories).
+
+  Version 0.9 is a major redesign of the library, that makes it easier
+  for the user to add DataLoaders, Modifiers, Filters and
+  OutputGenerators and offers greater control over the transformation
+  process.
+
+  If you need an older version, it can be found [[http://code.google.com/p/biblio-transformation-engine/][here]].
+
+* How to use the library
+
+  Biblio transformation engine uses the [[http://maven.apache.org/][apache maven]] tool for building
+  and dependency resolution. The library is split in two modules:
+  bte-core, that includes the basic infrastructure of the BTE, and
+  bte-io that includes some DataLoaders and OutputGenerators.
+
+** Getting the jar from the central maven repository
+
+   Include in the dependencies section of the pom.xml of your project
+   the following:
+
+#+BEGIN_SRC xml
+<dependency>
+  <groupId>gr.ekt.bte</groupId>
+  <artifactId>bte-core</artifactId>
+  <version>0.9</version>
+</dependency>
+#+END_SRC
+
+   If you want to use some of the loaders or the generators in bte-io
+   you will need to add the following as well:
+
+#+BEGIN_SRC xml
+<dependency>
+  <groupId>gr.ekt.bte</groupId>
+  <artifactId>bte-io</artifactId>
+  <version>0.9</version>
+</dependency>
+#+END_SRC
+
+** Building from source
+
+   Clone this git repository, and use maven install to add bte in your
+   local maven repository:
+
+#+BEGIN_SRC sh
+git clone https://github.com/EKT/Biblio-Transformation-Engine.git
+cd Biblio-Transformation-Engine
+mvn package
+mvn install
+#+END_SRC
+
+   After that you can add the xml snippets mentioned above, in your
+   project's pom.xml to make the library API available to your
+   classes.
