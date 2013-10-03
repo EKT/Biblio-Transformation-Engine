@@ -385,4 +385,18 @@ public class DSpaceOutputGenerator implements OutputGenerator {
             //nothing to see here
         }
     }
+
+    /**
+     * @return the output_directory_
+     */
+    public String getOutputDirectory() {
+        return output_directory_;
+    }
+
+    /**
+     * @param output_directory_ the output_directory_ to set
+     */
+    public void setOutputDirectory(String output_directory_) {
+        this.output_directory_ = output_directory_;
+    }
 }
