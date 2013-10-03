@@ -288,8 +288,8 @@ public class DSpaceOutputGenerator implements OutputGenerator {
 
             //The handle file contains (optionally) the handle that
             //this item should take.
-            elem += ", {\"name\": \"handle\", \"data\": \"";
-            if (field_map_.containsKey("handle")) {
+            if (field_map_.containsKey("handle")) { //Do not create handle file if no data is given for handle
+            	elem += ", {\"name\": \"handle\", \"data\": \"";
                 List<Value> handle_list = rec.getValues(field_map_.get("handle"));
                 String handle = "";
                 if (handle_list != null && handle_list.size() > 0) {
@@ -297,8 +297,8 @@ public class DSpaceOutputGenerator implements OutputGenerator {
                     handle = handle_value.getAsString();
                 }
                 elem += sanitize(handle);
-            }
-            elem += "\"}"; //closes the handle file
+                elem += "\"}"; //closes the handle file
+            }      
             elem += "]"; //closes the "files" array
             elem += "}"; //closes the "directory" value
             elem += "}"; //closes the initial object

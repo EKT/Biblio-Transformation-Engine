@@ -11,3 +11,6 @@ bin
 /doc/manual/Manual.pdf
 /doc/manual/Manual.tex
 workbench.xmi
+
+#Mac
+.DS_Store
