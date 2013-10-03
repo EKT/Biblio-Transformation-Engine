@@ -320,6 +320,12 @@ public class DSpaceOutputGenerator implements OutputGenerator {
         int pfi = 0;
         int fi = ret.indexOf('\\');
         while(fi != -1) {
+            // If the last character of the string is '\\', just add a
+            // second '\\'
+            if (fi == ret.length() - 1) {
+                ret = ret + "\\";
+                break;
+            }
             if (ret.charAt(fi + 1) == '\\') {
                 fi = ret.indexOf('\\', fi + 2);
                 continue;
