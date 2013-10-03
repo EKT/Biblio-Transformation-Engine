@@ -231,7 +231,16 @@ public class DSpaceOutputGenerator implements OutputGenerator {
                         //ERROR
                     }
                     String rec_field = field_map_.get(field);
-                    Iterator<Value> value_it = rec.getValues(rec_field).iterator();
+                    if (rec_field == null) {
+                        logger_.info("Field " + field + " not found in field map");
+                        continue;
+                    }
+                    List<Value> value_list = rec.getValues(rec_field);
+                    if (value_list == null) {
+                        logger_.info("Field " + field + " has no values");
+                        continue;
+                    }
+                    Iterator<Value> value_it = value_list.iterator();
                     while (value_it.hasNext()) {
                         elem += "{\"dc_value\": {";
                         Value val = value_it.next();
@@ -248,6 +257,10 @@ public class DSpaceOutputGenerator implements OutputGenerator {
                         elem += ", ";
                     }
                 }
+                if (elem.substring(elem.length() - 2).equals(", ")) {
+                    elem = elem.substring(0, elem.length() - 2);
+                }
+
                 elem += "]"; //closes the data
                 elem += "}"; //closes the file
                 if (ns_it.hasNext()) {
@@ -265,8 +278,33 @@ public class DSpaceOutputGenerator implements OutputGenerator {
         return ret;
     }
 
+    /**
+     * Handle JSON special characters.
+     *
+     */
     private String sanitize(String inp) {
-        return inp.replaceAll("\\\"", "\\\\\"");
+        String ret = inp;
+        //Handle the backslashes
+        int pfi = 0;
+        int fi = ret.indexOf('\\');
+        while(fi != -1) {
+            if (ret.charAt(fi + 1) == '\\') {
+                fi = ret.indexOf('\\', fi + 2);
+                continue;
+            }
+            String prefix = ret.substring(pfi, fi);
+            String suffix = ret.substring(fi + 1);
+            ret = prefix + "\\\\" + suffix;
+            fi = ret.indexOf('\\', prefix.length() + 2);
+        }
+
+        ret = ret.replaceAll("\\n", "\\\\n");
+        ret = ret.replaceAll("\\f", "\\\\f");
+        ret = ret.replaceAll("\\r", "\\\\r");
+        ret = ret.replaceAll("\\t", "\\\\t");
+        ret = ret.replaceAll("\\\"", "\\\\\"");
+
+        return ret;
     }
 
     /**
