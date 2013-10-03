@@ -45,11 +45,10 @@ import gr.ekt.bte.record.MapRecord;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.jbibtex.BibTeXDatabase;
@@ -57,68 +56,69 @@ import org.jbibtex.BibTeXEntry;
 import org.jbibtex.BibTeXParser;
 import org.jbibtex.BibTeXString;
 import org.jbibtex.Key;
-import org.jbibtex.LaTeXObject;
-import org.jbibtex.LaTeXParser;
-import org.jbibtex.LaTeXPrinter;
 import org.jbibtex.ParseException;
 
 
 public class BibTeXDataLoader extends FileDataLoader {
     private static Logger logger_ = Logger.getLogger(BibTeXDataLoader.class);
-    private BibTeXDatabase bibtex_entries_;
+    private Map<String, String> field_map_;
+    private FileReader reader_;
 
-    public BibTeXDataLoader(String filename) {
+    public BibTeXDataLoader(String filename, Map<String, String> fields) throws EmptySourceException {
         super(filename);
+        field_map_ = fields;
+
         try {
-            loadFile();
+            reader_ = new FileReader(new File(filename));
         } catch(IOException e) {
             logger_.info("Problem loading file: " + filename);
-            bibtex_entries_ = null;
-        } catch(ParseException e) {
-            logger_.info("File: " + filename + " is not a valid BibTeX file");
-            bibtex_entries_ = null;
+            throw new EmptySourceException("Problem loading file: " + filename);
         }
     }
 
     @Override
     public RecordSet getRecords() throws MalformedSourceException {
-        if (bibtex_entries_ == null) {
-            throw new EmptySourceException("Could not read from file: " + filename);
+        BibTeXDatabase bibtex_entries = null;
+
+        try {
+            bibtex_entries = loadFile();
+        } catch (IOException e) {
+            logger_.info("Problem loading file: " + filename);
+            throw new MalformedSourceException("Problem loading file: " + filename);
+        } catch (ParseException e) {
+            logger_.info("Bad input file: " + filename);
+            throw new MalformedSourceException("Bad input file: " + filename);
+        }
+
+        //This should not happen, but be prepared to handle it anyway
+        if (bibtex_entries == null) {
+            logger_.info("Unknown error while reading file: " + filename);
+            throw new EmptySourceException("Unknown error while reading file: " + filename);
         }
         RecordSet ret = new RecordSet();
 
-        Collection<BibTeXEntry> entries = bibtex_entries_.getEntries().values();
+        Collection<BibTeXEntry> entries = bibtex_entries.getEntries().values();
         for (BibTeXEntry entry : entries) {
             MapRecord rec = new MapRecord();
-            Key key = entry.getKey();
-            org.jbibtex.Value bib_value = entry.getField(key);
-            String plainTextString = null;
+            for (Map.Entry<String, String> en : field_map_.entrySet()) {
+                String record_key = en.getKey();
+                Key key = new Key(en.getValue());
+                org.jbibtex.Value bib_value = entry.getField(key);
 
-            if (bib_value != null) {
-                String latexString = null;
-                try {
-                    latexString = bib_value.toUserString();
-                    List<LaTeXObject> objects = parseLaTeX(latexString);
-                    plainTextString = printLaTeX(objects);
+                if (bib_value != null) {
+                    String latexString = bib_value.toUserString();
 
-                } catch (IOException e) {
-                    logger_.info("Invalid string: " + latexString);
-                    throw new MalformedSourceException("Invalid string: " + latexString);
-                } catch (ParseException e) {
-                    logger_.info("Invalid string: " + latexString);
-                    throw new MalformedSourceException("Invalid string: " + latexString);
+                    if (rec.hasField(record_key)) {
+                        List<Value> vals = rec.getValues(record_key);
+                        vals.add(new StringValue(latexString));
+                        rec.updateField(record_key, vals);
+                    }
+                    else {
+                        List<Value> vals = new ArrayList<Value>();
+                        vals.add(new StringValue(latexString));
+                        rec.addField(record_key, vals);
+                    }
                 }
-            }
-
-            if (!rec.hasField(key.getValue())) {
-                List<Value> vals = rec.getValues(key.getValue());
-                vals.add(new StringValue(plainTextString));
-                rec.updateField(key.getValue(), vals);
-            }
-            else {
-                List<Value> vals = new ArrayList<Value>();
-                vals.add(new StringValue(plainTextString));
-                rec.addField(key.getValue(), vals);
             }
 
             ret.addRecord(rec);
@@ -132,49 +132,31 @@ public class BibTeXDataLoader extends FileDataLoader {
         return getRecords();
     }
 
-    static
-    public List<LaTeXObject> parseLaTeX(String string) throws IOException, ParseException {
-        Reader reader = new StringReader(string);
-
-        try {
-            LaTeXParser parser = new LaTeXParser();
-
-            return parser.parse(reader);
-        } finally {
-            reader.close();
-        }
+    @Override
+    protected void finalize() throws Throwable {
+        reader_.close();
     }
 
-    static
-    public String printLaTeX(List<LaTeXObject> objects){
-        LaTeXPrinter printer = new LaTeXPrinter();
-
-        return printer.print(objects);
-    }
-
-    private void loadFile() throws IOException, ParseException {
-        Reader reader = new FileReader(new File(filename));
-
+    private BibTeXDatabase loadFile() throws IOException, ParseException {
         BibTeXParser parser = new BibTeXParser()
             {
+
                 @Override
-                public void checkStringResolution(Key key, BibTeXString string) {
-                    if(string == null) {
+                public void checkStringResolution(Key key, BibTeXString string){
+                    if(string == null){
                         logger_.info("Unresolved string: \"" + key.getValue() + "\"");
                     }
                 }
 
                 @Override
                 public void checkCrossReferenceResolution(Key key, BibTeXEntry entry){
+
                     if(entry == null){
                         logger_.info("Unresolved cross-reference: \"" + key.getValue() + "\"");
                     }
                 }
-
             };
 
-        bibtex_entries_ = parser.parse(reader);
-
-        reader.close();
+        return parser.parse(reader_);
     }
 }
