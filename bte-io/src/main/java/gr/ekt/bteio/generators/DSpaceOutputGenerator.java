@@ -49,6 +49,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
 import com.google.gson.JsonArray;
@@ -162,7 +163,7 @@ public class DSpaceOutputGenerator implements OutputGenerator {
                         if (value_object.has("qualifier")) {
                             line += " qualifier='" + value_object.getAsJsonPrimitive("qualifier").getAsString() + "'";
                         }
-                        line += ">" + value_object.getAsJsonPrimitive("value").getAsString() + "</dc_value>";
+                        line += ">" + StringEscapeUtils.escapeXml(value_object.getAsJsonPrimitive("value").getAsString()) + "</dc_value>";
                         file_writer.println(line);
                     }
                     file_writer.println("</dublin_core>");
