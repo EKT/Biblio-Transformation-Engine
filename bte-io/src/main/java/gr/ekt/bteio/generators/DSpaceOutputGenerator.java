@@ -201,12 +201,13 @@ public class DSpaceOutputGenerator implements OutputGenerator {
 
         String[] titles = {"namespace", "element", "qualifier"};
 
+        String parent_dir = sanitize(dir_prefix);
         for (Record rec : records) {
-            String elem = "{\"dir_prefix\": \"" + dir_prefix + "\", ";
+            String elem = "{\"dir_prefix\": \"" + parent_dir + "\", ";
             cnt++;
             String output_directory = dir_prefix + File.separator + String.format(format_string, cnt) + File.separator;
             logger_.debug("Outdir = " + output_directory);
-            elem += "\"directory\": {\"path\": \"" + output_directory + "\", ";
+            elem += "\"directory\": {\"path\": \"" + sanitize(output_directory) + "\", ";
             //Output the namespaces, one in each file
             Iterator<String> ns_it = namespace_fields.keySet().iterator();
             elem += "\"files\":[";
@@ -219,7 +220,7 @@ public class DSpaceOutputGenerator implements OutputGenerator {
                 else {
                     filename = "metadata_" + cns + ".xml";
                 }
-                elem += "{\"name\": \"" + filename + "\", \"schema\": \"" + cns + "\", \"data\":[";
+                elem += "{\"name\": \"" + sanitize(filename) + "\", \"schema\": \"" + sanitize(cns) + "\", \"data\":[";
                 Iterator<String> field_it = namespace_fields.get(cns).iterator();
                 while(field_it.hasNext()) {
                     String field = field_it.next();
@@ -275,7 +276,7 @@ public class DSpaceOutputGenerator implements OutputGenerator {
                     Iterator<Value> val_it = contents.iterator();
                     while(val_it.hasNext()) {
                         Value val = val_it.next();
-                        elem += "\"" + val.getAsString() + "\"";
+                        elem += "\"" + sanitize(val.getAsString()) + "\"";
                         if (val_it.hasNext()) {
                             elem += ", ";
                         }
@@ -295,7 +296,7 @@ public class DSpaceOutputGenerator implements OutputGenerator {
                     Value handle_value = handle_list.get(0);
                     handle = handle_value.getAsString();
                 }
-                elem += handle;
+                elem += sanitize(handle);
             }
             elem += "\"}"; //closes the handle file
             elem += "]"; //closes the "files" array
