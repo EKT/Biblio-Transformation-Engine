@@ -156,14 +156,14 @@ public class DSpaceOutputGenerator implements OutputGenerator {
                     file_writer.println("<dublin_core schema='" + file_object.getAsJsonPrimitive("schema").getAsString() + "'>");
                     JsonArray data = file_object.getAsJsonArray("data");
                     for (JsonElement dc_value : data) {
-                        JsonObject value_object = dc_value.getAsJsonObject().getAsJsonObject("dc_value");
-                        String line = "  <dc_value ";
+                        JsonObject value_object = dc_value.getAsJsonObject().getAsJsonObject("dcvalue");
+                        String line = "  <dcvalue ";
                         line += "namespace='" + value_object.getAsJsonPrimitive("namespace").getAsString() + "' ";
                         line += "element='" + value_object.getAsJsonPrimitive("element").getAsString() + "'";
                         if (value_object.has("qualifier")) {
                             line += " qualifier='" + value_object.getAsJsonPrimitive("qualifier").getAsString() + "'";
                         }
-                        line += ">" + StringEscapeUtils.escapeXml(value_object.getAsJsonPrimitive("value").getAsString()) + "</dc_value>";
+                        line += ">" + StringEscapeUtils.escapeXml(value_object.getAsJsonPrimitive("value").getAsString()) + "</dcvalue>";
                         file_writer.println(line);
                     }
                     file_writer.println("</dublin_core>");
@@ -241,7 +241,7 @@ public class DSpaceOutputGenerator implements OutputGenerator {
                     }
                     Iterator<Value> value_it = value_list.iterator();
                     while (value_it.hasNext()) {
-                        elem += "{\"dc_value\": {";
+                        elem += "{\"dcvalue\": {";
                         Value val = value_it.next();
                         for (int idx = 0; idx < field_elems.length; idx++) {
                             elem += "\"" + titles[idx] + "\": \"" + field_elems[idx] + "\", ";
