@@ -49,6 +49,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
 import com.google.gson.JsonArray;
@@ -155,14 +156,14 @@ public class DSpaceOutputGenerator implements OutputGenerator {
                     file_writer.println("<dublin_core schema='" + file_object.getAsJsonPrimitive("schema").getAsString() + "'>");
                     JsonArray data = file_object.getAsJsonArray("data");
                     for (JsonElement dc_value : data) {
-                        JsonObject value_object = dc_value.getAsJsonObject().getAsJsonObject("dc_value");
-                        String line = "  <dc_value ";
+                        JsonObject value_object = dc_value.getAsJsonObject().getAsJsonObject("dcvalue");
+                        String line = "  <dcvalue ";
                         line += "namespace='" + value_object.getAsJsonPrimitive("namespace").getAsString() + "' ";
                         line += "element='" + value_object.getAsJsonPrimitive("element").getAsString() + "'";
                         if (value_object.has("qualifier")) {
                             line += " qualifier='" + value_object.getAsJsonPrimitive("qualifier").getAsString() + "'";
                         }
-                        line += ">" + value_object.getAsJsonPrimitive("value").getAsString() + "</dc_value>";
+                        line += ">" + StringEscapeUtils.escapeXml(value_object.getAsJsonPrimitive("value").getAsString()) + "</dcvalue>";
                         file_writer.println(line);
                     }
                     file_writer.println("</dublin_core>");
@@ -240,7 +241,7 @@ public class DSpaceOutputGenerator implements OutputGenerator {
                     }
                     Iterator<Value> value_it = value_list.iterator();
                     while (value_it.hasNext()) {
-                        elem += "{\"dc_value\": {";
+                        elem += "{\"dcvalue\": {";
                         Value val = value_it.next();
                         for (int idx = 0; idx < field_elems.length; idx++) {
                             elem += "\"" + titles[idx] + "\": \"" + field_elems[idx] + "\", ";
@@ -288,8 +289,8 @@ public class DSpaceOutputGenerator implements OutputGenerator {
 
             //The handle file contains (optionally) the handle that
             //this item should take.
-            elem += ", {\"name\": \"handle\", \"data\": \"";
-            if (field_map_.containsKey("handle")) {
+            if (field_map_.containsKey("handle")) { //Do not create handle file if no data is given for handle
+            	elem += ", {\"name\": \"handle\", \"data\": \"";
                 List<Value> handle_list = rec.getValues(field_map_.get("handle"));
                 String handle = "";
                 if (handle_list != null && handle_list.size() > 0) {
@@ -297,8 +298,8 @@ public class DSpaceOutputGenerator implements OutputGenerator {
                     handle = handle_value.getAsString();
                 }
                 elem += sanitize(handle);
-            }
-            elem += "\"}"; //closes the handle file
+                elem += "\"}"; //closes the handle file
+            }      
             elem += "]"; //closes the "files" array
             elem += "}"; //closes the "directory" value
             elem += "}"; //closes the initial object
