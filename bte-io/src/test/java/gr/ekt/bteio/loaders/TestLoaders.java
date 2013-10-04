@@ -41,9 +41,7 @@ import gr.ekt.bte.core.Record;
 import gr.ekt.bte.core.RecordSet;
 import gr.ekt.bte.exceptions.MalformedSourceException;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
@@ -51,22 +49,22 @@ import org.junit.Test;
 public class TestLoaders {
     @Test
     public void testCSVLoader() {
-        List<String> fields = new ArrayList<String>();
-        fields.add("title");
-        fields.add("subject");
-        fields.add("language");
-        fields.add("author");
-        fields.add("date");
-        fields.add("id");
-        fields.add("note");
-        fields.add("type");
+        Map<Integer, String> fields = new HashMap<Integer, String>();
+        fields.put(0, "title");
+        fields.put(1, "subject");
+        fields.put(2, "language");
+        fields.put(3, "author");
+        fields.put(4, "date");
+        fields.put(5, "id");
+        fields.put(6, "note");
+        fields.put(7, "type");
 
         try {
             DataLoader dl = new CSVDataLoader("src/test/resources/test_data.csv", fields);
             RecordSet recs = dl.getRecords();
             assertEquals(2, recs.size());
             Record rec = recs.getRecords().get(0);
-            for (String fl : fields) {
+            for (String fl : fields.values()) {
                 assert(rec.hasField(fl));
             }
         } catch(MalformedSourceException e) {

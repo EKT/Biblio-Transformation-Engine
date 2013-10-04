@@ -44,7 +44,7 @@ import gr.ekt.bte.record.MapRecord;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -53,7 +53,7 @@ import au.com.bytecode.opencsv.CSVReader;
 public class CSVDataLoader extends FileDataLoader {
     private static Logger logger_ = Logger.getLogger(CSVDataLoader.class);
     private CSVReader reader_;
-    private List<String> fields_;
+    private Map<Integer, String> fields_;
     private int skip_lines_ = 0;
     private char separator_ = ',';
     private char quote_char_ = '"';
@@ -65,13 +65,13 @@ public class CSVDataLoader extends FileDataLoader {
         fields_ = null;
     }
 
-    public CSVDataLoader(String filename, List<String> fields) throws EmptySourceException {
+    public CSVDataLoader(String filename, Map<Integer, String> fields) throws EmptySourceException {
         super(filename);
         fields_ = fields;
         openReader();
     }
 
-    public CSVDataLoader(String filename, List<String> fields, char separator, char quote_char, int skip_lines, String value_separator) throws EmptySourceException {
+    public CSVDataLoader(String filename, Map<Integer, String> fields, char separator, char quote_char, int skip_lines, String value_separator) throws EmptySourceException {
         super(filename);
         fields_ = fields;
         separator_ = separator;
@@ -92,7 +92,8 @@ public class CSVDataLoader extends FileDataLoader {
             rs = new RecordSet();
             while((next_line = reader_.readNext()) != null) {
                 MapRecord rec = new MapRecord();
-                for(int i = 0; i < next_line.length; i++) {
+                for(Map.Entry<Integer,String> en : fields_.entrySet()) {
+                    int i = en.getKey();
                     String values[] = next_line[i].split(value_separator_);
                     for(int j = 0; j < values.length; j++) {
                         rec.addValue(fields_.get(i), new StringValue(values[j]));
@@ -141,14 +142,14 @@ public class CSVDataLoader extends FileDataLoader {
     /**
      * @return the fields_
      */
-    public List<String> getFields() {
+    public Map<Integer, String> getFields() {
         return fields_;
     }
 
     /**
      * @param fields_ the fields_ to set
      */
-    public void setFields(List<String> fields_) {
+    public void setFields(Map<Integer, String> fields_) {
         this.fields_ = fields_;
     }
 
