@@ -63,14 +63,8 @@ public class DSpaceOutputGenerator implements OutputGenerator {
     private DSpaceOutputSpec spec_;
     private String output_directory_ = "./output";
     private int padding_ = 5;
-    // private boolean write_output_;
 
     private Logger logger_ = Logger.getLogger(DSpaceOutputGenerator.class);
-
-    // public DSpaceOutputGenerator() {
-    //     field_map_ = new HashMap<String, String>();
-    //     spec_ = null;
-    // }
 
     public DSpaceOutputGenerator(Map<String, String> fmap) {
         field_map_ = fmap;
@@ -96,7 +90,7 @@ public class DSpaceOutputGenerator implements OutputGenerator {
         }
 
         //For debugging
-        writeJsonToFile(ret, "./output.json");
+        //writeJsonToFile(ret, "./output.json");
 
         return ret;
     }
@@ -290,7 +284,7 @@ public class DSpaceOutputGenerator implements OutputGenerator {
             //The handle file contains (optionally) the handle that
             //this item should take.
             if (field_map_.containsKey("handle")) { //Do not create handle file if no data is given for handle
-            	elem += ", {\"name\": \"handle\", \"data\": \"";
+                elem += ", {\"name\": \"handle\", \"data\": \"";
                 List<Value> handle_list = rec.getValues(field_map_.get("handle"));
                 String handle = "";
                 if (handle_list != null && handle_list.size() > 0) {
@@ -299,7 +293,7 @@ public class DSpaceOutputGenerator implements OutputGenerator {
                 }
                 elem += sanitize(handle);
                 elem += "\"}"; //closes the handle file
-            }      
+            }
             elem += "]"; //closes the "files" array
             elem += "}"; //closes the "directory" value
             elem += "}"; //closes the initial object
