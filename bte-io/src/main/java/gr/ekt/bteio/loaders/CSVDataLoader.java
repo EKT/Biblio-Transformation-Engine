@@ -57,7 +57,7 @@ public class CSVDataLoader extends FileDataLoader {
     private int skip_lines_ = 0;
     private char separator_ = ',';
     private char quote_char_ = '"';
-    private String value_separator_ = "\\|\\|";
+    private String value_separator_ = null;
 
     public CSVDataLoader() {
         super();
@@ -94,9 +94,14 @@ public class CSVDataLoader extends FileDataLoader {
                 MapRecord rec = new MapRecord();
                 for(Map.Entry<Integer,String> en : fields_.entrySet()) {
                     int i = en.getKey();
-                    String values[] = next_line[i].split(value_separator_);
-                    for(int j = 0; j < values.length; j++) {
-                        rec.addValue(fields_.get(i), new StringValue(values[j]));
+                    if (value_separator_ != null) {
+                        String values[] = next_line[i].split(value_separator_);
+                        for(int j = 0; j < values.length; j++) {
+                            rec.addValue(fields_.get(i), new StringValue(values[j]));
+                        }
+                    }
+                    else {
+                        rec.addValue(fields_.get(i), new StringValue(next_line[i]));
                     }
                 }
                 rs.addRecord(rec);
