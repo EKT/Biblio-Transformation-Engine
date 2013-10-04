@@ -14,7 +14,7 @@
   <packaging>jar</packaging>
 
   <name>Biblio Transformation Engine :: Input/Output</name>
-  <url>http://maven.apache.org</url>
+  <description>This is the input/output module of the Biblio-Transformation-Engine</description>
 
   <properties>
     <!-- This is the path to the root [dspace-src] directory. -->
