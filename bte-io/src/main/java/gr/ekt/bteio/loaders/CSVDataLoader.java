@@ -53,7 +53,7 @@ import au.com.bytecode.opencsv.CSVReader;
 public class CSVDataLoader extends FileDataLoader {
     private static Logger logger_ = Logger.getLogger(CSVDataLoader.class);
     private CSVReader reader_;
-    private Map<Integer, String> fields_;
+    private Map<Integer, String> field_map_;
     private int skip_lines_ = 0;
     private char separator_ = ',';
     private char quote_char_ = '"';
@@ -62,18 +62,18 @@ public class CSVDataLoader extends FileDataLoader {
     public CSVDataLoader() {
         super();
         reader_ = null;
-        fields_ = null;
+        field_map_ = null;
     }
 
     public CSVDataLoader(String filename, Map<Integer, String> fields) throws EmptySourceException {
         super(filename);
-        fields_ = fields;
+        field_map_ = fields;
         openReader();
     }
 
     public CSVDataLoader(String filename, Map<Integer, String> fields, char separator, char quote_char, int skip_lines, String value_separator) throws EmptySourceException {
         super(filename);
-        fields_ = fields;
+        field_map_ = fields;
         separator_ = separator;
         quote_char_ = quote_char;
         skip_lines_ = skip_lines;
@@ -92,16 +92,16 @@ public class CSVDataLoader extends FileDataLoader {
             rs = new RecordSet();
             while((next_line = reader_.readNext()) != null) {
                 MapRecord rec = new MapRecord();
-                for(Map.Entry<Integer,String> en : fields_.entrySet()) {
+                for(Map.Entry<Integer,String> en : field_map_.entrySet()) {
                     int i = en.getKey();
                     if (value_separator_ != null) {
                         String values[] = next_line[i].split(value_separator_);
                         for(int j = 0; j < values.length; j++) {
-                            rec.addValue(fields_.get(i), new StringValue(values[j]));
+                            rec.addValue(field_map_.get(i), new StringValue(values[j]));
                         }
                     }
                     else {
-                        rec.addValue(fields_.get(i), new StringValue(next_line[i]));
+                        rec.addValue(field_map_.get(i), new StringValue(next_line[i]));
                     }
                 }
                 rs.addRecord(rec);
@@ -147,15 +147,15 @@ public class CSVDataLoader extends FileDataLoader {
     /**
      * @return the fields_
      */
-    public Map<Integer, String> getFields() {
-        return fields_;
+    public Map<Integer, String> getFieldMap() {
+        return field_map_;
     }
 
     /**
      * @param fields_ the fields_ to set
      */
-    public void setFields(Map<Integer, String> fields_) {
-        this.fields_ = fields_;
+    public void setFieldMap(Map<Integer, String> fields_) {
+        this.field_map_ = fields_;
     }
 
     /**
