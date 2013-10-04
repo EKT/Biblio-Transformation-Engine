@@ -107,8 +107,8 @@ public class BibTeXDataLoader extends FileDataLoader {
         for (BibTeXEntry entry : entries) {
             MapRecord rec = new MapRecord();
             for (Map.Entry<String, String> en : field_map_.entrySet()) {
-                String record_key = en.getKey();
-                Key key = new Key(en.getValue());
+                String record_key = en.getValue();
+                Key key = new Key(en.getKey());
                 org.jbibtex.Value bib_value = entry.getField(key);
 
                 if (bib_value != null) {
