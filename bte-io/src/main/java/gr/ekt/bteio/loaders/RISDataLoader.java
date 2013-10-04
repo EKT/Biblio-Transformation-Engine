@@ -71,6 +71,9 @@ public class RISDataLoader extends FileDataLoader {
 
     @Override
     public RecordSet getRecords() throws MalformedSourceException {
+        if (reader_ == null) {
+            throw new EmptySourceException("Input file is not open");
+        }
         RecordSet records = new RecordSet();
 
         try {
@@ -79,54 +82,57 @@ public class RISDataLoader extends FileDataLoader {
             int line_cnt = 0;
             MapRecord rec = null;
 
+            String ris_tag = null;
             while((line = reader_.readLine()) != null) {
                 line_cnt++;
-                line = line.trim();
 
                 //Ignore empty lines
-                if(line.isEmpty()) {
+                if(line.isEmpty() || line.equals("") || line.matches("^\\s*$")) {
                     continue;
                 }
                 Pattern ris_pattern = Pattern.compile("^([A-Z][A-Z0-9])  - (.*)$");
                 Matcher ris_matcher = ris_pattern.matcher(line);
-                if (!ris_matcher.matches()) {
-                    logger_.info("Line: " + line_cnt + " in file " + filename + " does not match the RIS format");
-                    throw new MalformedSourceException("Line: " + line_cnt + " in file " + filename + " does not match the RIS format");
-                }
-                String ris_tag = ris_matcher.group(1);
-                if (!in_record) {
-                    //The first tag of the record should be "TY". If we
-                    //encounter it we should create a new record.
-                    if (ris_tag.equals("TY")) {
-                        in_record = true;
-                        rec = new MapRecord();
+                Value val;
+                if (ris_matcher.matches()) {
+                    ris_tag = ris_matcher.group(1);
+                    if (!in_record) {
+                        //The first tag of the record should be "TY". If we
+                        //encounter it we should create a new record.
+                        if (ris_tag.equals("TY")) {
+                            in_record = true;
+                            rec = new MapRecord();
+                        }
+                        else {
+                            logger_.info("Line: " + line_cnt + " in file " + filename + " should contain tag \"TY\"");
+                            throw new MalformedSourceException("Line: " + line_cnt + " in file " + filename + " should contain tag \"TY\"");
+                        }
                     }
-                    else {
-                        logger_.info("Line: " + line_cnt + " in file " + filename + " should contain tag \"TY\"");
-                        throw new MalformedSourceException("Line: " + line_cnt + " in file " + filename + " should contain tag \"TY\"");
+
+                    //If the tag is the end record tag ("ER") we stop
+                    //being in a record. Add the current record in the
+                    //record set and skip the rest of the processing.
+                    if (ris_tag.equals("ER")) {
+                        in_record = false;
+                        records.addRecord(rec);
+                        rec = null;
+                        continue;
                     }
-                }
 
-                //If the tag is the end record tag ("ER") we stop
-                //being in a record. Add the current record in the
-                //record set and skip the rest of the processing.
-                if (ris_tag.equals("ER")) {
-                    in_record = false;
-                    records.addRecord(rec);
-                    rec = null;
-                    continue;
+                    //If there is no mapping for the current tag we do not
+                    //know what to do with it, so we ignore it.
+                    if (!field_map_.containsKey(ris_tag)) {
+                        logger_.warn("Tag \"" + ris_tag + "\" is not in the field map. Ignoring");
+                        continue;
+                    }
+                    val = new StringValue(ris_matcher.group(2));
                 }
-
-                //If there is no mapping for the current tag we do not
-                //know what to do with it, so we ignore it.
-                if (!field_map_.containsKey(ris_tag)) {
-                    logger_.warn("Tag \"" + ris_tag + "\" is not in the field map. Ignoring");
-                    continue;
+                else {
+                    val = new StringValue(line);
                 }
-
                 String field = field_map_.get(ris_tag);
-                Value val = new StringValue(ris_matcher.group(2));
-                rec.addValue(field, val);
+                if (field != null) {
+                    rec.addValue(field, val);
+                }
             }
         } catch (IOException e) {
             logger_.info("Error while reading from file " + filename);
@@ -162,5 +168,19 @@ public class RISDataLoader extends FileDataLoader {
         } catch (FileNotFoundException e) {
             throw new EmptySourceException("File " + filename + " not found");
         }
+    }
+
+    /**
+     * @return the field_map_
+     */
+    public Map<String, String> getFieldMap() {
+        return field_map_;
+    }
+
+    /**
+     * @param field_map_ the field_map_ to set
+     */
+    public void setFieldMap(Map<String, String> field_map_) {
+        this.field_map_ = field_map_;
     }
 }
