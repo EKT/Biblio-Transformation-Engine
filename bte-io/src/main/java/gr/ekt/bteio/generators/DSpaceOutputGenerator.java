@@ -194,8 +194,6 @@ public class DSpaceOutputGenerator implements OutputGenerator {
         String format_string = "%0" + padding + "d";
         int cnt = 0;
 
-        String[] titles = {"namespace", "element", "qualifier"};
-
         String parent_dir = sanitize(dir_prefix);
         for (Record rec : records) {
             String elem = "{\"dir_prefix\": \"" + parent_dir + "\", ";
@@ -204,61 +202,16 @@ public class DSpaceOutputGenerator implements OutputGenerator {
             logger_.debug("Outdir = " + output_directory);
             elem += "\"directory\": {\"path\": \"" + sanitize(output_directory) + "\", ";
             //Output the namespaces, one in each file
-            Iterator<String> ns_it = namespace_fields.keySet().iterator();
             elem += "\"files\":[";
-            while (ns_it.hasNext()) {
-                String filename;
-                String cns = ns_it.next();
-                if (cns.equals("dc")) {
-                    filename = "dublin_core.xml";
-                }
-                else {
-                    filename = "metadata_" + cns + ".xml";
-                }
-                elem += "{\"name\": \"" + sanitize(filename) + "\", \"schema\": \"" + sanitize(cns) + "\", \"data\":[";
-                Iterator<String> field_it = namespace_fields.get(cns).iterator();
-                while(field_it.hasNext()) {
-                    String field = field_it.next();
-                    String[] field_elems = field.split("\\.");
-                    if (field_elems.length < 2 || field_elems.length > 3) {
-                        //ERROR
-                    }
-                    String rec_field = field_map_.get(field);
-                    if (rec_field == null) {
-                        logger_.info("Field " + field + " not found in field map");
-                        continue;
-                    }
-                    List<Value> value_list = rec.getValues(rec_field);
-                    if (value_list == null) {
-                        logger_.info("Field " + field + " has no values");
-                        continue;
-                    }
-                    Iterator<Value> value_it = value_list.iterator();
-                    while (value_it.hasNext()) {
-                        elem += "{\"dcvalue\": {";
-                        Value val = value_it.next();
-                        for (int idx = 0; idx < field_elems.length; idx++) {
-                            elem += "\"" + titles[idx] + "\": \"" + field_elems[idx] + "\", ";
-                        }
-                        elem += "\"value\": \"" + sanitize(val.getAsString()) +  "\"";
-                        elem += "}}"; //closes the dc_value
-                        if (value_it.hasNext()) {
-                            elem += ", ";
-                        }
-                    }
-                    if (field_it.hasNext()) {
-                        elem += ", ";
-                    }
-                }
-                if (elem.substring(elem.length() - 2).equals(", ")) {
-                    elem = elem.substring(0, elem.length() - 2);
-                }
 
-                elem += "]"; //closes the data
-                elem += "}"; //closes the file
-                if (ns_it.hasNext()) {
+            List<String> file_json = prepareFilesJSONRepresentation(namespace_fields, rec);
+
+            if (file_json.size() > 0) {
+                for(int i = 0; i < file_json.size() - 1; i++) {
+                    elem += file_json.get(i);
                     elem += ", ";
                 }
+                elem += file_json.get(file_json.size() - 1);
             }
 
             //The contents file contains (optionally) a list of files
@@ -300,6 +253,77 @@ public class DSpaceOutputGenerator implements OutputGenerator {
 
             //System.out.println(elem);
             ret.add(elem);
+        }
+
+        return ret;
+    }
+
+    private List<String> prepareFilesJSONRepresentation(Map<String, List<String>> namespace_fields, Record rec) {
+        String[] titles = {"namespace", "element", "qualifier"};
+        ArrayList<String> ret = new ArrayList<String>();
+
+        Iterator<String> ns_it = namespace_fields.keySet().iterator();
+        String json_file = "";
+        while (ns_it.hasNext()) {
+            boolean write_file = false;
+            String filename;
+            String cns = ns_it.next();
+            if (cns.equals("dc")) {
+                filename = "dublin_core.xml";
+            }
+            else {
+                filename = "metadata_" + cns + ".xml";
+            }
+            json_file += "{\"name\": \"" + sanitize(filename) + "\", \"schema\": \"" + sanitize(cns) + "\", \"data\":[";
+            Iterator<String> field_it = namespace_fields.get(cns).iterator();
+            while(field_it.hasNext()) {
+                String field = field_it.next();
+                String[] field_elems = field.split("\\.");
+                if (field_elems.length < 2 || field_elems.length > 3) {
+                    //ERROR
+                }
+                String rec_field = field_map_.get(field);
+                if (rec_field == null) {
+                    logger_.info("Field " + field + " not found in field map");
+                    continue;
+                }
+                List<Value> value_list = rec.getValues(rec_field);
+                if (value_list == null) {
+                    logger_.info("Field " + field + " has no values");
+                    continue;
+                }
+                Iterator<Value> value_it = value_list.iterator();
+                while (value_it.hasNext()) {
+                    json_file += "{\"dcvalue\": {";
+                    Value val = value_it.next();
+                    if (field_elems.length > 0) {
+                        write_file = true;
+                    }
+                    for (int idx = 0; idx < field_elems.length; idx++) {
+                        json_file += "\"" + titles[idx] + "\": \"" + field_elems[idx] + "\", ";
+                    }
+                    json_file += "\"value\": \"" + sanitize(val.getAsString()) +  "\"";
+                    json_file += "}}"; //closes the dc_value
+                    if (value_it.hasNext()) {
+                        json_file += ", ";
+                    }
+                }
+                if (field_it.hasNext()) {
+                    json_file += ", ";
+                }
+            }
+
+            if (json_file.substring(json_file.length() - 2).equals(", ")) {
+                json_file = json_file.substring(0, json_file.length() - 2);
+            }
+
+            json_file += "]"; //closes the data
+            json_file += "}"; //closes the file
+
+            if(write_file) {
+                ret.add(json_file);
+                json_file = "";
+            }
         }
 
         return ret;
