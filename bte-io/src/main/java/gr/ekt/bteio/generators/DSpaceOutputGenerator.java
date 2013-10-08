@@ -63,6 +63,7 @@ public class DSpaceOutputGenerator implements OutputGenerator {
     private DSpaceOutputSpec spec_;
     private String output_directory_ = "./output";
     private int padding_ = 5;
+    private boolean write_json_;
 
     private Logger logger_ = Logger.getLogger(DSpaceOutputGenerator.class);
 
@@ -89,8 +90,9 @@ public class DSpaceOutputGenerator implements OutputGenerator {
             ret = createOutput(recs, output_directory_, padding_);
         }
 
-        //For debugging
-        //writeJsonToFile(ret, "./output.json");
+        if(write_json_) {
+            writeJsonToFile(ret, "./output.json");
+        }
 
         return ret;
     }
@@ -207,46 +209,14 @@ public class DSpaceOutputGenerator implements OutputGenerator {
             List<String> file_json = prepareFilesJSONRepresentation(namespace_fields, rec);
 
             if (file_json.size() > 0) {
-                for(int i = 0; i < file_json.size() - 1; i++) {
+                for(int i = 0; i < file_json.size(); i++) {
                     elem += file_json.get(i);
-                    elem += ", ";
-                }
-                elem += file_json.get(file_json.size() - 1);
-            }
-
-            //The contents file contains (optionally) a list of files
-            //to be uploaded as bitstreams one in each line
-            elem += ", {\"name\": \"contents\", \"data\":[";
-            if (field_map_.containsKey("contents")) {
-                List<Value> contents = rec.getValues(field_map_.get("contents"));
-
-                if (contents != null) {
-                    Iterator<Value> val_it = contents.iterator();
-                    while(val_it.hasNext()) {
-                        Value val = val_it.next();
-                        elem += "\"" + sanitize(val.getAsString()) + "\"";
-                        if (val_it.hasNext()) {
-                            elem += ", ";
-                        }
+                    if (i < file_json.size() - 1) {
+                        elem += ", ";
                     }
                 }
             }
-            elem += "]"; //closes the contents file data section
-            elem += "}"; //closes the contents file
 
-            //The handle file contains (optionally) the handle that
-            //this item should take.
-            if (field_map_.containsKey("handle")) { //Do not create handle file if no data is given for handle
-                elem += ", {\"name\": \"handle\", \"data\": \"";
-                List<Value> handle_list = rec.getValues(field_map_.get("handle"));
-                String handle = "";
-                if (handle_list != null && handle_list.size() > 0) {
-                    Value handle_value = handle_list.get(0);
-                    handle = handle_value.getAsString();
-                }
-                elem += sanitize(handle);
-                elem += "\"}"; //closes the handle file
-            }
             elem += "]"; //closes the "files" array
             elem += "}"; //closes the "directory" value
             elem += "}"; //closes the initial object
@@ -259,13 +229,11 @@ public class DSpaceOutputGenerator implements OutputGenerator {
     }
 
     private List<String> prepareFilesJSONRepresentation(Map<String, List<String>> namespace_fields, Record rec) {
-        String[] titles = {"namespace", "element", "qualifier"};
         ArrayList<String> ret = new ArrayList<String>();
 
         Iterator<String> ns_it = namespace_fields.keySet().iterator();
-        String json_file = "";
         while (ns_it.hasNext()) {
-            boolean write_file = false;
+            String json_file = "";
             String filename;
             String cns = ns_it.next();
             if (cns.equals("dc")) {
@@ -275,57 +243,93 @@ public class DSpaceOutputGenerator implements OutputGenerator {
                 filename = "metadata_" + cns + ".xml";
             }
             json_file += "{\"name\": \"" + sanitize(filename) + "\", \"schema\": \"" + sanitize(cns) + "\", \"data\":[";
-            Iterator<String> field_it = namespace_fields.get(cns).iterator();
-            while(field_it.hasNext()) {
-                String field = field_it.next();
-                String[] field_elems = field.split("\\.");
-                if (field_elems.length < 2 || field_elems.length > 3) {
-                    //ERROR
-                }
-                String rec_field = field_map_.get(field);
-                if (rec_field == null) {
-                    logger_.info("Field " + field + " not found in field map");
-                    continue;
-                }
-                List<Value> value_list = rec.getValues(rec_field);
-                if (value_list == null) {
-                    logger_.info("Field " + field + " has no values");
-                    continue;
-                }
-                Iterator<Value> value_it = value_list.iterator();
-                while (value_it.hasNext()) {
-                    json_file += "{\"dcvalue\": {";
-                    Value val = value_it.next();
-                    if (field_elems.length > 0) {
-                        write_file = true;
-                    }
-                    for (int idx = 0; idx < field_elems.length; idx++) {
-                        json_file += "\"" + titles[idx] + "\": \"" + field_elems[idx] + "\", ";
-                    }
-                    json_file += "\"value\": \"" + sanitize(val.getAsString()) +  "\"";
-                    json_file += "}}"; //closes the dc_value
-                    if (value_it.hasNext()) {
-                        json_file += ", ";
-                    }
-                }
-                if (field_it.hasNext()) {
+            List<String> file_data = prepareFileDataJSONRepresentation(namespace_fields.get(cns), rec);
+            if (file_data.size() == 0) {
+                continue;
+            }
+            for (int i = 0; i < file_data.size(); i++) {
+                json_file += file_data.get(i);
+                if (i < file_data.size() - 1) {
                     json_file += ", ";
                 }
             }
-
-            if (json_file.substring(json_file.length() - 2).equals(", ")) {
-                json_file = json_file.substring(0, json_file.length() - 2);
-            }
-
             json_file += "]"; //closes the data
             json_file += "}"; //closes the file
 
-            if(write_file) {
-                ret.add(json_file);
-                json_file = "";
-            }
+            ret.add(json_file);
         }
 
+        //The contents file contains (optionally) a list of files
+        //to be uploaded as bitstreams one in each line
+        String json_file = "{\"name\": \"contents\", \"data\":[";
+        if (field_map_.containsKey("contents")) {
+            List<Value> contents = rec.getValues(field_map_.get("contents"));
+
+            if (contents != null) {
+                Iterator<Value> val_it = contents.iterator();
+                while(val_it.hasNext()) {
+                    Value val = val_it.next();
+                    json_file += "\"" + sanitize(val.getAsString()) + "\"";
+                    if (val_it.hasNext()) {
+                        json_file += ", ";
+                    }
+                }
+            }
+        }
+        json_file += "]"; //closes the contents file data section
+        json_file += "}"; //closes the contents file
+        ret.add(json_file);
+
+        //The handle file contains (optionally) the handle that
+        //this item should take.
+        if (field_map_.containsKey("handle")) { //Do not create handle file if no data is given for handle
+            json_file = "{\"name\": \"handle\", \"data\": \"";
+            List<Value> handle_list = rec.getValues(field_map_.get("handle"));
+            String handle = "";
+            if (handle_list != null && handle_list.size() > 0) {
+                Value handle_value = handle_list.get(0);
+                handle = handle_value.getAsString();
+            }
+            json_file += sanitize(handle);
+            json_file += "\"}"; //closes the handle file
+            ret.add(json_file);
+        }
+
+        return ret;
+    }
+
+    private List<String> prepareFileDataJSONRepresentation(List<String> field_list, Record rec) {
+        List<String> ret = new ArrayList<String>();
+        String[] titles = {"namespace", "element", "qualifier"};
+
+        for (int i = 0; i < field_list.size(); i++) {
+            String field = field_list.get(i);
+            String[] field_elems = field.split("\\.");
+            if (field_elems.length < 2 || field_elems.length > 3) {
+                //ERROR
+            }
+            String rec_field = field_map_.get(field);
+            if (rec_field == null) {
+                logger_.info("Field " + field + " not found in field map");
+                continue;
+            }
+            List<Value> value_list = rec.getValues(rec_field);
+            if (value_list == null) {
+                logger_.info("Field " + field + " has no values");
+                continue;
+            }
+
+            for (int j = 0; j < value_list.size(); j++) {
+                String json_value = "{\"dcvalue\": {";
+                Value val = value_list.get(j);
+                for (int idx = 0; idx < field_elems.length; idx++) {
+                    json_value += "\"" + titles[idx] + "\": \"" + field_elems[idx] + "\", ";
+                }
+                json_value += "\"value\": \"" + sanitize(val.getAsString()) +  "\"";
+                json_value += "}}"; //closes the dc_value
+                ret.add(json_value);
+            }
+        }
         return ret;
     }
 
@@ -417,5 +421,19 @@ public class DSpaceOutputGenerator implements OutputGenerator {
      */
     public void setOutputDirectory(String output_directory_) {
         this.output_directory_ = output_directory_;
+    }
+
+    /**
+     * @return the debug_
+     */
+    public boolean getWriteJSON() {
+        return write_json_;
+    }
+
+    /**
+     * @param debug_ the debug_ to set
+     */
+    public void setWriteJSON(boolean write_json_) {
+        this.write_json_ = write_json_;
     }
 }
