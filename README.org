@@ -40,7 +40,7 @@
 <dependency>
   <groupId>gr.ekt.bte</groupId>
   <artifactId>bte-core</artifactId>
-  <version>0.9.1</version>
+  <version>0.9.2</version>
 </dependency>
 #+END_SRC
 
@@ -51,7 +51,7 @@
 <dependency>
   <groupId>gr.ekt.bte</groupId>
   <artifactId>bte-io</artifactId>
-  <version>0.9.1</version>
+  <version>0.9.2</version>
 </dependency>
 #+END_SRC
 
@@ -70,3 +70,46 @@ mvn install
    After that you can add the xml snippets mentioned above, in your
    project's pom.xml to make the library API available to your
    classes.
+
+* Dependencies
+  Most external dependencies come from the bte-io project. If you
+  provide your own data loaders and output generators, you will not
+  need them. In any case Maven handles the dependencies, so probably
+  you will not need to concern yourself with them, but they are
+  recorded here for reference.
+
+  One notable exception is that you will need the Java environment
+  1.6 or newer.
+** BTE parent dependencies (inherited by child projects)
+   - log4j version 1.2.17 (http://logging.apache.org/log4j/2.x/)
+   - junit version 4.11 (http://junit.org/)
+   - dom4j version 1.6.1 (http://dom4j.sourceforge.net/)
+
+** BTE io dependencies
+   - opencsv version 2.3 (http://opencsv.sourceforge.net/)
+   - google gson version 2.2.4 (https://code.google.com/p/google-gson/)
+   - jbibtex version 1.0.8 (https://code.google.com/p/java-bibtex/)
+   - oai4j version 0.6b1 (http://oai4j-client.sourceforge.net/)
+
+
+
+* License
+  See file [[file:LICENSE.txt][./LICENSE.txt]]
+
+* Changelog
+  - version 0.9.2
+    + Added OAI-PMH dataloader
+    + Added an XML namespace manager for use with XPathRecord (for the
+      moment it is hardcoded for the oai_dc and dc namespaces returned
+      from OAI requests).
+    + Fixed DSpaceOutputGenerator bug: Consecutive calls to
+      writeOutput, do not overwrite previously written data anymore.
+
+  - version 0.9.1
+    + Added an Endnote data loader
+    + Fixed DSpaceOutputGenerator bug: not producing empty .xml
+      files if there are no data to write in them.
+
+  - version 0.9
+    + Major redesign of the library. Check the documentation (still in
+      progress) for more detailed info.
