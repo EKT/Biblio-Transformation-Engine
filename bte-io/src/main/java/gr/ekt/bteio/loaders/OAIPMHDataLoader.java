@@ -5,12 +5,17 @@ import gr.ekt.bte.core.DataLoadingSpec;
 import gr.ekt.bte.core.RecordSet;
 import gr.ekt.bte.exceptions.MalformedSourceException;
 
+import gr.ekt.bte.record.XPathRecord;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
@@ -28,12 +33,14 @@ public class OAIPMHDataLoader implements DataLoader {
     private ResumptionToken token_ = null;
     private String prefix_ = null;
     private boolean has_more_records_ = true;
+    private Map<String, String> field_map_;
     //private
 
-    public OAIPMHDataLoader(String server_address, String prefix) {
+    public OAIPMHDataLoader(String server_address, String prefix, Map<String, String> field_map) {
         server_address_ = server_address;
         server_ = new OaiPmhServer(server_address_);
         prefix_ = prefix;
+        field_map_ = field_map;
     }
 
     @Override
@@ -66,13 +73,20 @@ public class OAIPMHDataLoader implements DataLoader {
             has_more_records_ = token_ != null;
             DocumentBuilderFactory doc_factory = DocumentBuilderFactory.newInstance();
             doc_factory.setNamespaceAware(true);
+            Map<String, String> exp_map = new HashMap<String, String>();
+            for (Map.Entry<String, String> entry : field_map_.entrySet()) {
+                exp_map.put(entry.getValue(), "//dc:" + entry.getKey());
+            }
+
             for (int i = 0; i < oai_record_list.size(); i++) {
                 String metadata = oai_record_list.get(i).getMetadataAsString();
 
                 Document doc = doc_factory.newDocumentBuilder().parse(new ByteArrayInputStream(metadata.getBytes("UTF-8")));
-
-                //TODO create xpaths based on input mappings and use
-                //them to initialize XPathRecords
+                try {
+                    ret.addRecord(new XPathRecord(doc, exp_map));
+                } catch (XPathExpressionException e) {
+                    logger_.info("XPath expression exception (that should not happen): " + e.getMessage());
+                }
             }
         } catch (OAIException e) {
             logger_.info("Caught OAIException " + e.getMessage());
