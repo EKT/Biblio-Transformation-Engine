@@ -2,16 +2,14 @@ package gr.ekt.bteio.loaders;
 
 import gr.ekt.bte.core.DataLoader;
 import gr.ekt.bte.core.DataLoadingSpec;
+import gr.ekt.bte.core.Record;
 import gr.ekt.bte.core.RecordSet;
 import gr.ekt.bte.core.StringValue;
 import gr.ekt.bte.exceptions.MalformedSourceException;
 import gr.ekt.bte.record.MapRecord;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Element;
@@ -68,15 +66,7 @@ public class OAIPMHDataLoader implements DataLoader {
             has_more_records_ = token_ != null;
 
             for (int i = 0; i < oai_record_list.size(); i++) {
-                MapRecord rec = new MapRecord();
-                Element metadata_element = oai_record_list.get(i).getMetadata();
-                for (String field : field_map_.keySet()) {
-                    String record_key = field_map_.get(field);
-                    for (Object elem : metadata_element.elements(field)) {
-                        String field_value = ((Element)elem).getText();
-                        rec.addValue(record_key, new StringValue(field_value));
-                    }
-                }
+                Record rec = oai2bte(oai_record_list.get(i));
                 ret.addRecord(rec);
             }
         } catch (OAIException e) {
@@ -88,6 +78,24 @@ public class OAIPMHDataLoader implements DataLoader {
 
     @Override
     public RecordSet getRecords(DataLoadingSpec spec) throws MalformedSourceException {
+        //See if the data loading spec requests a specific record.
+        if (spec.getIdentifier() != null) {
+            if(server_ == null) {
+                throw new MalformedSourceException("Connection with server " + server_address_ + " has not been established");
+            }
+            RecordSet ret = new RecordSet();
+            try {
+                se.kb.oai.pmh.Record oai_record = server_.getRecord(spec.getIdentifier(), prefix_);
+                Record rec = oai2bte(oai_record);
+                ret.addRecord(rec);
+
+            } catch (OAIException e) {
+                logger_.info("Caught OAIException " + e.getMessage());
+                throw new MalformedSourceException(e.getMessage());
+            }
+
+            return ret;
+        }
         return getRecords();
     }
 
@@ -108,14 +116,27 @@ public class OAIPMHDataLoader implements DataLoader {
     /**
      * @return the prefix_
      */
-    public String getPrefix_() {
+    public String getPrefix() {
         return prefix_;
     }
 
     /**
      * @param prefix_ the prefix_ to set
      */
-    public void setPrefix_(String prefix_) {
+    public void setPrefix(String prefix_) {
         this.prefix_ = prefix_;
+    }
+
+    private Record oai2bte(se.kb.oai.pmh.Record oai_record) {
+        MapRecord rec = new MapRecord();
+        Element metadata_element = oai_record.getMetadata();
+        for (String field : field_map_.keySet()) {
+            String record_key = field_map_.get(field);
+            for (Object elem : metadata_element.elements(field)) {
+                String field_value = ((Element)elem).getText();
+                rec.addValue(record_key, new StringValue(field_value));
+            }
+        }
+        return rec;
     }
 }
