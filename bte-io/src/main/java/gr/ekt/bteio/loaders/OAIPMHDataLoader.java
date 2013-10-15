@@ -3,23 +3,18 @@ package gr.ekt.bteio.loaders;
 import gr.ekt.bte.core.DataLoader;
 import gr.ekt.bte.core.DataLoadingSpec;
 import gr.ekt.bte.core.RecordSet;
+import gr.ekt.bte.core.StringValue;
 import gr.ekt.bte.exceptions.MalformedSourceException;
+import gr.ekt.bte.record.MapRecord;
 
-import gr.ekt.bte.record.XPathRecord;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
+import org.dom4j.Element;
 
 import se.kb.oai.OAIException;
 import se.kb.oai.pmh.OaiPmhServer;
@@ -71,34 +66,21 @@ public class OAIPMHDataLoader implements DataLoader {
             //If there is a resumtion token returned, that means that
             //the server has more records.
             has_more_records_ = token_ != null;
-            DocumentBuilderFactory doc_factory = DocumentBuilderFactory.newInstance();
-            doc_factory.setNamespaceAware(true);
-            Map<String, String> exp_map = new HashMap<String, String>();
-            for (Map.Entry<String, String> entry : field_map_.entrySet()) {
-                exp_map.put(entry.getValue(), "//dc:" + entry.getKey());
-            }
 
             for (int i = 0; i < oai_record_list.size(); i++) {
-                String metadata = oai_record_list.get(i).getMetadataAsString();
-
-                Document doc = doc_factory.newDocumentBuilder().parse(new ByteArrayInputStream(metadata.getBytes("UTF-8")));
-                try {
-                    ret.addRecord(new XPathRecord(doc, exp_map));
-                } catch (XPathExpressionException e) {
-                    logger_.info("XPath expression exception (that should not happen): " + e.getMessage());
+                MapRecord rec = new MapRecord();
+                Element metadata_element = oai_record_list.get(i).getMetadata();
+                for (String field : field_map_.keySet()) {
+                    String record_key = field_map_.get(field);
+                    for (Object elem : metadata_element.elements(field)) {
+                        String field_value = ((Element)elem).getText();
+                        rec.addValue(record_key, new StringValue(field_value));
+                    }
                 }
+                ret.addRecord(rec);
             }
         } catch (OAIException e) {
             logger_.info("Caught OAIException " + e.getMessage());
-            throw new MalformedSourceException(e.getMessage());
-        } catch (IOException e) {
-            logger_.info("Caught IOException " + e.getMessage());
-            throw new MalformedSourceException(e.getMessage());
-        } catch (ParserConfigurationException e) {
-            logger_.info("Caught ParserConfigurationException " + e.getMessage());
-            throw new MalformedSourceException(e.getMessage());
-        } catch (SAXException e) {
-            logger_.info("Caught SAXException " + e.getMessage());
             throw new MalformedSourceException(e.getMessage());
         }
         return ret;
