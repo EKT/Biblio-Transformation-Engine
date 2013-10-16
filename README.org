@@ -97,19 +97,21 @@ mvn install
   See file [[file:LICENSE.txt][./LICENSE.txt]]
 
 * Changelog
-  - version 0.9.2
-    + Added OAI-PMH dataloader
-    + Added an XML namespace manager for use with XPathRecord (for the
-      moment it is hardcoded for the oai_dc and dc namespaces returned
-      from OAI requests).
-    + Fixed DSpaceOutputGenerator bug: Consecutive calls to
-      writeOutput, do not overwrite previously written data anymore.
+  - version 0.9
+    + Major redesign of the library. Check the documentation (still in
+      progress) for more detailed info.
 
   - version 0.9.1
     + Added an Endnote data loader
     + Fixed DSpaceOutputGenerator bug: not producing empty .xml
       files if there are no data to write in them.
 
-  - version 0.9
-    + Major redesign of the library. Check the documentation (still in
-      progress) for more detailed info.
+  - version 0.9.2
+    + Added OAI-PMH dataloader
+    + Added an XML namespace manager for use with XPathRecord (for the
+      moment it is hardcoded for the oai_dc and dc namespaces returned
+      from OAI requests).
+    + Added the method getFields in the Record interface and
+      implemented it in XPathRecord and MapRecord.
+    + Fixed DSpaceOutputGenerator bug: Consecutive calls to
+      writeOutput, do not overwrite previously written data anymore.
