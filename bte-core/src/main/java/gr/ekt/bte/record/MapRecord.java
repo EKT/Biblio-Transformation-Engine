@@ -39,6 +39,7 @@ import gr.ekt.bte.core.Value;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 
@@ -137,5 +138,10 @@ public class MapRecord implements MutableRecord {
     @Override
     public boolean hasField(String field) {
         return getValues(field) != null;
+    }
+
+    @Override
+    public Set<String> getFields() {
+        return records.keySet();
     }
 }

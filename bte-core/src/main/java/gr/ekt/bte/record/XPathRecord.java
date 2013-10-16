@@ -33,21 +33,27 @@
  */
 package gr.ekt.bte.record;
 
-import java.util.Map;
-import java.util.List;
-import java.util.TreeMap;
-import java.util.Set;
-import java.util.ArrayList;
-
-import javax.xml.xpath.*;
-import org.w3c.dom.*;
-
-import org.apache.log4j.Logger;
-
-import gr.ekt.bte.core.Value;
+import gr.ekt.bte.core.MutableRecord;
 import gr.ekt.bte.core.Record;
 import gr.ekt.bte.core.StringValue;
-import gr.ekt.bte.core.MutableRecord;
+import gr.ekt.bte.core.Value;
+import gr.ekt.bte.misc.XpathNamespaceManager;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
+import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 
 public class XPathRecord implements Record {
@@ -62,6 +68,7 @@ public class XPathRecord implements Record {
 
         Set<Map.Entry<String, String>> entries = xpath_string_map.entrySet();
         XPath xpath = XPathFactory.newInstance().newXPath();
+        xpath.setNamespaceContext(new XpathNamespaceManager());
         for(Map.Entry<String, String> entry : entries) {
             XPathExpression expr = xpath.compile(entry.getValue());
             xpath_map.put(entry.getKey(), expr);
@@ -112,5 +119,10 @@ public class XPathRecord implements Record {
     public boolean hasField(String field) {
         //TODO Probably not the most efficient way to check
         return getValues(field) != null;
+    }
+
+    @Override
+    public Set<String> getFields() {
+        return xpath_map.keySet();
     }
 }

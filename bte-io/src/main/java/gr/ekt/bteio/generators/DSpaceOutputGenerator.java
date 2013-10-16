@@ -64,6 +64,7 @@ public class DSpaceOutputGenerator implements OutputGenerator {
     private String output_directory_ = "./output";
     private int padding_ = 5;
     private boolean write_json_;
+    private int directory_cnt_ = 0;
 
     private Logger logger_ = Logger.getLogger(DSpaceOutputGenerator.class);
 
@@ -194,13 +195,12 @@ public class DSpaceOutputGenerator implements OutputGenerator {
         }
 
         String format_string = "%0" + padding + "d";
-        int cnt = 0;
 
         String parent_dir = sanitize(dir_prefix);
         for (Record rec : records) {
             String elem = "{\"dir_prefix\": \"" + parent_dir + "\", ";
-            cnt++;
-            String output_directory = dir_prefix + File.separator + String.format(format_string, cnt) + File.separator;
+            directory_cnt_++;
+            String output_directory = dir_prefix + File.separator + String.format(format_string, directory_cnt_) + File.separator;
             logger_.debug("Outdir = " + output_directory);
             elem += "\"directory\": {\"path\": \"" + sanitize(output_directory) + "\", ";
             //Output the namespaces, one in each file
@@ -435,5 +435,19 @@ public class DSpaceOutputGenerator implements OutputGenerator {
      */
     public void setWriteJSON(boolean write_json_) {
         this.write_json_ = write_json_;
+    }
+
+    /**
+     * @return the directory_cnt_
+     */
+    public int getDirectoryCounter() {
+        return directory_cnt_;
+    }
+
+    /**
+     * @param directory_cnt_ the directory_cnt_ to set
+     */
+    public void setDirectoryCounter(int directory_cnt_) {
+        this.directory_cnt_ = directory_cnt_;
     }
 }
