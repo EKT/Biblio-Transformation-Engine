@@ -34,6 +34,7 @@
 package gr.ekt.bte.core;
 
 import java.util.List;
+import java.util.Set;
 
 /**
    The basic immutable record.
@@ -73,4 +74,6 @@ public interface Record {
     public boolean isMutable();
 
     public boolean hasField(String field);
+
+    public Set<String> getFields();
 }
