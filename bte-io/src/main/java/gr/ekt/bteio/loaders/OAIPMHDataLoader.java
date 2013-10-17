@@ -144,6 +144,8 @@ public class OAIPMHDataLoader implements DataLoader {
      */
     public void setServerAddress(String server_address_) {
         this.server_address_ = server_address_;
+        server_ = new OaiPmhServer(server_address_);
+        has_more_records_ = true;
     }
 
     /**
@@ -171,5 +173,19 @@ public class OAIPMHDataLoader implements DataLoader {
             }
         }
         return rec;
+    }
+
+    /**
+     * @return the field_map_
+     */
+    public Map<String, String> getFieldMap() {
+        return field_map_;
+    }
+
+    /**
+     * @param field_map_ the field_map_ to set
+     */
+    public void setFieldMap(Map<String, String> field_map_) {
+        this.field_map_ = field_map_;
     }
 }
