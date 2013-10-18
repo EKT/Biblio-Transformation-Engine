@@ -53,15 +53,23 @@ import se.kb.oai.pmh.RecordsList;
 import se.kb.oai.pmh.ResumptionToken;
 
 public class OAIPMHDataLoader implements DataLoader {
-    private static  Logger logger_ = Logger.getLogger(OAIPMHDataLoader.class);
-    private OaiPmhServer server_ = null;
-    private String server_address_ = null;
-    private ResumptionToken token_ = null;
-    private String prefix_ = null;
-    private boolean has_more_records_ = true;
+    private static  Logger logger_;
+    private OaiPmhServer server_;
+    private String server_address_;
+    private ResumptionToken token_;
+    private String prefix_;
+    private boolean has_more_records_;
     private Map<String, String> field_map_;
     //private
 
+    public OAIPMHDataLoader() {
+        server_ = null;
+        server_address_ = null;
+        token_ = null;
+        prefix_ = null;
+        has_more_records_ = true;
+        field_map_ = null;
+    }
     public OAIPMHDataLoader(String server_address, String prefix, Map<String, String> field_map) {
         server_address_ = server_address;
         server_ = new OaiPmhServer(server_address_);
