@@ -5,7 +5,7 @@
   <parent>
     <groupId>gr.ekt.bte</groupId>
     <artifactId>bte-parent</artifactId>
-    <version>0.9.3</version>
+    <version>0.9.3-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
 
@@ -52,6 +52,11 @@
       <groupId>se.kb</groupId>
       <artifactId>oai4j</artifactId>
       <version>0.6b1</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.jexcelapi</groupId>
+      <artifactId>jxl</artifactId>
+      <version>2.6.12</version>
     </dependency>
   </dependencies>
 </project>
