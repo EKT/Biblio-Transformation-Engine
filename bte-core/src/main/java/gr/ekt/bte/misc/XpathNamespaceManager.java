@@ -67,7 +67,7 @@ public class XpathNamespaceManager implements NamespaceContext {
         return null;
     }
 
-    public Iterator getPrefixes(String namespaceURI) {
+    public Iterator<String> getPrefixes(String namespaceURI) {
         ArrayList<String> foo = new ArrayList<String>();
         if (namespaceURI.equals("http://www.openarchives.org/OAI/2.0/")) {
             foo.add("oai_dc");
