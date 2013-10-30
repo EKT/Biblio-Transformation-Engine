@@ -69,7 +69,7 @@ public class CSVOutputGenerator implements OutputGenerator {
             String [] line = new String[m_fields.size()];
             for (int i = 0; i < m_fields.size(); i++) {
                 List<Value> vals = rec.getValues(m_fields.get(i));
-                if (vals.size() == 0) {
+                if (vals == null || vals.size() == 0) {
                     continue;
                 }
 
