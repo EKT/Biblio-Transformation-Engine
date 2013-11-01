@@ -54,9 +54,14 @@
       <version>0.6b1</version>
     </dependency>
     <dependency>
-      <groupId>net.sourceforge.jexcelapi</groupId>
-      <artifactId>jxl</artifactId>
-      <version>2.6.12</version>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+      <version>3.10-beta2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+      <version>3.10-beta2</version>
     </dependency>
   </dependencies>
 </project>

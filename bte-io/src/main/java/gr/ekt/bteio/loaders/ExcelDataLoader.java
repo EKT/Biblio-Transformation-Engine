@@ -2,7 +2,6 @@ package gr.ekt.bteio.loaders;
 
 import gr.ekt.bte.core.DataLoadingSpec;
 import gr.ekt.bte.core.RecordSet;
-
 import gr.ekt.bte.core.StringValue;
 import gr.ekt.bte.dataloader.FileDataLoader;
 import gr.ekt.bte.exceptions.MalformedSourceException;
@@ -12,25 +11,30 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import jxl.Cell;
-import jxl.Sheet;
-import jxl.Workbook;
-import jxl.read.biff.BiffException;
-
 import org.apache.log4j.Logger;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 public class ExcelDataLoader extends FileDataLoader {
     private static Logger logger = Logger.getLogger(ExcelDataLoader.class);
     private Workbook wb;
     private Map<Integer, String> fieldMap;
+    //Ignore the lines before line number skipLines
     private int skipLines;
+    //If the ignoreLines == 0 then we read all the lines (respecting skipLines)
+    private int ignoreLinesAfter;
     private boolean isRead;
 
-    public ExcelDataLoader(String filename, Map<Integer, String> fieldMap, int skipLines) {
+    public ExcelDataLoader(String filename, Map<Integer, String> fieldMap) {
         super(filename);
         new File(filename);
         this.fieldMap = fieldMap;
-        this.skipLines = skipLines;
+        this.skipLines = 0;
+        this.ignoreLinesAfter = 0;
         wb = null;
         isRead = false;
     }
@@ -47,7 +51,7 @@ public class ExcelDataLoader extends FileDataLoader {
                                                + filename + " ("
                                                + e.getMessage() + ")");
         }
-        catch (BiffException e) {
+        catch (InvalidFormatException e) {
             logger.info("Problem loading file: " + filename
                         + " (" + e.getMessage() + ")");
             throw new MalformedSourceException("Problem loading file: "
@@ -60,19 +64,25 @@ public class ExcelDataLoader extends FileDataLoader {
         //Currently we need this flag in order for
         //TransformationEngine not to go into an infinite loop.
         if (!isRead) {
+            logger.info("Opening file: " + filename);
             int nSheets = wb.getNumberOfSheets();
+            logger.info("number of sheets: " + nSheets);
             for(int i = 0; i < nSheets; i++) {
-                Sheet cSheet = wb.getSheet(i);
-                String cSheetName = cSheet.getName();
-                for(int j = skipLines; j < cSheet.getRows(); j++) {
-                    Cell[] row = cSheet.getRow(j);
+                Sheet cSheet = wb.getSheetAt(i);
+                String cSheetName = cSheet.getSheetName();
+                for(int j = skipLines; j < cSheet.getLastRowNum(); j++) {
+                    if (ignoreLinesAfter != 0 && j >= ignoreLinesAfter) {
+                        break;
+                    }
+                    Row row = cSheet.getRow(j);
                     MapRecord rec = new MapRecord();
-                    for(int k = 0; k < row.length; k++) {
+                    for(int k = 0; k < row.getLastCellNum(); k++) {
                         if (!fieldMap.keySet().contains(k)) {
                             continue;
                         }
 
-                        rec.addValue(fieldMap.get(k), new StringValue(row[k].getContents()));
+                        rec.addValue(fieldMap.get(k),
+                                     new StringValue(row.getCell(k).getStringCellValue()));
                     }
                     //TODO remove the hardcoded value
                     rec.addValue("ExcelSheetName", new StringValue(cSheetName));
@@ -90,13 +100,8 @@ public class ExcelDataLoader extends FileDataLoader {
         return getRecords();
     }
 
-    private void openReader() throws BiffException, IOException {
-        wb = Workbook.getWorkbook(new File(filename));
-    }
-
-    @Override
-    protected void finalize() {
-        wb.close();
+    private void openReader() throws IOException, InvalidFormatException {
+        wb = WorkbookFactory.create(new File(filename));
     }
 
     /**
@@ -126,4 +131,19 @@ public class ExcelDataLoader extends FileDataLoader {
     public void setSkipLines(int skipLines) {
         this.skipLines = skipLines;
     }
+
+    /**
+     * @return the ignoreLinesAfter
+     */
+    public int getIgnoreLinesAfter () {
+        return ignoreLinesAfter;
+    }
+
+    /**
+     * @param ignoreLinesAfter the ignoreLinesAfter to set
+     */
+    public void setIgnoreLinesAfter (int ignoreLinesAfter) {
+        this.ignoreLinesAfter = ignoreLinesAfter;
+    }
+
 }
