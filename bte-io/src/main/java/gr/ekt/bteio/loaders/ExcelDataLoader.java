@@ -9,11 +9,13 @@ import gr.ekt.bte.record.MapRecord;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -80,9 +82,39 @@ public class ExcelDataLoader extends FileDataLoader {
                         if (!fieldMap.keySet().contains(k)) {
                             continue;
                         }
+                        StringValue val;
+                        Cell cCell = row.getCell(k);
+                        if (cCell == null) {
+                            continue;
+                        }
+                        int cellType = cCell.getCellType();
+                        switch (cellType) {
+                            case Cell.CELL_TYPE_STRING:
+                                val = new StringValue(
+                                        cCell.getStringCellValue());
+                                break;
+                            case Cell.CELL_TYPE_NUMERIC:
+                                if (DateUtil.isCellDateFormatted(cCell)) {
+                                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                                    val = new StringValue(sdf.format(cCell.getDateCellValue()));
+                                }
+                                else {
+                                    val = new StringValue(String.valueOf(cCell
+                                                                         .getNumericCellValue()));
+                                }
+                                break;
+                            case Cell.CELL_TYPE_BLANK:
+                                val = new StringValue("");
+                                break;
+                            case Cell.CELL_TYPE_BOOLEAN:
+                                val = new StringValue(String.valueOf(cCell
+                                        .getBooleanCellValue()));
+                                break;
+                            default:
+                                val = new StringValue("Unsupported cell type");
+                        }
 
-                        rec.addValue(fieldMap.get(k),
-                                     new StringValue(row.getCell(k).getStringCellValue()));
+                        rec.addValue(fieldMap.get(k), val);
                     }
                     //TODO remove the hardcoded value
                     rec.addValue("ExcelSheetName", new StringValue(cSheetName));
