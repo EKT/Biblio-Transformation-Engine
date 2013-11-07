@@ -76,4 +76,13 @@ public interface DataLoader {
      * data
      */
     public RecordSet getRecords(DataLoadingSpec spec) throws MalformedSourceException;
+
+    /**
+     * Tests if there are more records to be loaded from this data
+     * loader.  This means that a call to {@link getRecords} will return a non
+     * empty {@link RecordSet}
+     *
+     * @return <code>true</code> when there are more records to be loaded
+     */
+    public boolean hasMoreRecords();
 }
