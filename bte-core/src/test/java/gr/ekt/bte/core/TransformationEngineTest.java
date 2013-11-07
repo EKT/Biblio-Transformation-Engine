@@ -33,20 +33,107 @@
  */
 package gr.ekt.bte.core;
 
-import static org.junit.Assert.*;
-import gr.ekt.bte.exceptions.BadTransformationSpec;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import gr.ekt.bte.exceptions.BadTransformationSpec;
+import gr.ekt.bte.exceptions.EmptySourceException;
 import gr.ekt.bte.exceptions.MalformedSourceException;
+import gr.ekt.bte.record.MapRecord;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
 public class TransformationEngineTest {
-    DataLoader dl;
-    OutputGenerator og;
-    Workflow empty_workflow;
-    Workflow full_filter_workflow;
-    Workflow half_filter_workflow;
+    private DataLoader dl;
+    private OutputGenerator og;
+    private Workflow empty_workflow;
+    private Workflow full_filter_workflow;
+    private Workflow half_filter_workflow;
+
+    private class SimpleOutputGenerator implements OutputGenerator {
+        public List<String> generateOutput(RecordSet recs) {
+            ArrayList<String> ret = new ArrayList<String>();
+
+            for(Record rec : recs) {
+                ret.add(rec.getValues("id").get(0).getAsString());
+            }
+
+            return ret;
+        }
+
+        public List<String> generateOutput(RecordSet recs, DataOutputSpec spec) {
+            return generateOutput(recs);
+        }
+    }
+
+    private class SimpleDataLoader implements DataLoader {
+        // A simple data loader that has only 500 records to return
+        private int id = 0;
+
+        public RecordSet getRecords() throws EmptySourceException {
+            return getRecords(null);
+        }
+
+        public RecordSet getRecords(DataLoadingSpec spec) throws EmptySourceException {
+            RecordSet ret = new RecordSet();
+
+            for (int i = 0; i < spec.getNumberOfRecords(); i++) {
+                MapRecord rec = new MapRecord();
+                if (id >= 500) {
+                    break;
+                }
+                rec.addValue("id", new StringValue(Integer.toString(id++)));
+                ret.addRecord(rec);
+            }
+
+            return ret;
+        }
+
+        @Override
+        public boolean hasMoreRecords() {
+            if (id >= 500) {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    private class FullFilter extends AbstractFilter {
+        public FullFilter() {
+            super("Full filter");
+        }
+
+        @Override
+        public boolean isIncluded(Record rec) {
+            return false;
+        }
+    }
+
+    private class HalfFilter extends AbstractFilter {
+        public HalfFilter() {
+            super("Half filter");
+        }
+
+        @Override
+        public boolean isIncluded(Record rec) {
+            /* Get only odd numbered records from the first 100, and all
+             * of them for the next 100.
+             */
+            if (Integer.parseInt(rec.getValues("id").get(0).getAsString()) > 100)
+                return true;
+            if ((Integer.parseInt(rec.getValues("id").get(0).getAsString()) % 2) == 0) {
+                return false;
+            }
+
+            return true;
+        }
+    }
 
     @Before
     public void setUp() {
@@ -60,13 +147,6 @@ public class TransformationEngineTest {
         half_filter_workflow.addStepAtEnd(new HalfFilter());
     }
 
-    // @Test(expected = BadTransformationSpec.class)
-    // public void testBadSpec() {
-    //     TransformationSpec spec = new TransformationSpec("foo");
-    //     spec.setOffset(100);
-    //     te.transform(spec);
-    // }
-
     @Test
     public void testTransform() {
         try {
@@ -76,27 +156,30 @@ public class TransformationEngineTest {
 
             TransformationResult res = null;
             try {
+                // Request 100 records
                 res = te.transform(spec);
             } catch(BadTransformationSpec e) {
                 fail(e.getMessage());
             }
 
-            assertEquals(100, res.getOutput().size());
-            assertEquals(100, res.getLastLog().getFirstUnexaminedRecord());
-            assertFalse(res.getLastLog().getEndOfInput());
+            assertEquals("The output size should be 100.", 100, res.getOutput().size());
+            assertEquals("The first unexamined record should be 100.", 100, res.getLastLog().getFirstUnexaminedRecord());
+            assertFalse("We should not be at the end of input.", res.getLastLog().getEndOfInput());
 
             spec.setOffset(res.getLastLog().getFirstUnexaminedRecord());
             try {
+                // Request 100 records
                 res = te.transform(spec);
             } catch(BadTransformationSpec e) {
                 fail(e.getMessage());
             }
 
-            assertEquals(100, res.getOutput().size());
-            assertEquals(200, res.getLastLog().getFirstUnexaminedRecord());
-            assertFalse(res.getLastLog().getEndOfInput());
+            assertEquals("The output size should be 100.", 100, res.getOutput().size());
+            assertEquals("The first unexamined record should be 200.", 200, res.getLastLog().getFirstUnexaminedRecord());
+            assertFalse("We should not be at the end of input.", res.getLastLog().getEndOfInput());
 
             spec.setOffset(res.getLastLog().getFirstUnexaminedRecord());
+            // Request 350 records (we should only have 300 to return)
             spec.setNumberOfRecords(350);
             try {
                 res = te.transform(spec);
@@ -104,9 +187,9 @@ public class TransformationEngineTest {
                 fail(e.getMessage());
             }
 
-            assertEquals(300, res.getOutput().size());
-            assertEquals(500, res.getLastLog().getFirstUnexaminedRecord());
-            assertTrue(res.getLastLog().getEndOfInput());
+            assertEquals("The output size should be 300 records.", 300, res.getOutput().size());
+            assertEquals("The first unexaminded record should be 500", 500, res.getLastLog().getFirstUnexaminedRecord());
+            assertTrue("We should be at the end of input", res.getLastLog().getEndOfInput());
         } catch (MalformedSourceException e) {
             fail(e.getMessage());
         }
@@ -122,14 +205,16 @@ public class TransformationEngineTest {
 
             TransformationResult res = null;
             try {
+                // Request 100 records
                 res = te.transform(spec);
             } catch(BadTransformationSpec e) {
                 fail(e.getMessage());
             }
 
-            assertEquals(0, res.getOutput().size());
-            assertEquals(500, res.getLastLog().getFirstUnexaminedRecord());
-            assertTrue(res.getLastLog().getEndOfInput());
+            // We should not get any records at all
+            assertEquals("The output size should be 0.", 0, res.getOutput().size());
+            assertEquals("The first unexamined record should be 500.", 500, res.getLastLog().getFirstUnexaminedRecord());
+            assertTrue("We should be at the end of input.", res.getLastLog().getEndOfInput());
         } catch (MalformedSourceException e) {
             fail(e.getMessage());
         }
@@ -146,14 +231,15 @@ public class TransformationEngineTest {
 
             TransformationResult res = null;
             try {
+                // Request 100 records
                 res = te.transform(spec);
             } catch(BadTransformationSpec e) {
                 fail(e.getMessage());
             }
 
-            assertEquals(100, res.getOutput().size());
-            assertEquals(151, res.getLastLog().getFirstUnexaminedRecord());
-            assertFalse(res.getLastLog().getEndOfInput());
+            assertEquals("The output size should be 100.", 100, res.getOutput().size());
+            assertEquals("The first unexamined record should be 151.", 151, res.getLastLog().getFirstUnexaminedRecord());
+            assertFalse("We should not be at the end of input.", res.getLastLog().getEndOfInput());
         } catch (MalformedSourceException e) {
             fail(e.getMessage());
         }
