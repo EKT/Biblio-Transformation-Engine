@@ -117,3 +117,9 @@ mvn install
       writeOutput, do not overwrite previously written data anymore.
 
   - version 0.9.3
+    + Add Excel data loader
+    + Add MultiSource data loader
+    + Automatically install sources and javadocs in the local
+      repository when issuing mvn install
+    + Bugfixes for OAI-PMH data loader
+
