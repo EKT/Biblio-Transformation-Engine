@@ -53,8 +53,10 @@ public class MultiSourceDataLoader implements DataLoader {
         RecordSet ret = new RecordSet();
 
         for (DataLoader loader : dataLoaders) {
-            RecordSet cSet = loader.getRecords();
-            ret.addAll(cSet);
+            if (loader.hasMoreRecords()) {
+                RecordSet cSet = loader.getRecords();
+                ret.addAll(cSet);
+            }
         }
 
         return ret;
@@ -63,6 +65,17 @@ public class MultiSourceDataLoader implements DataLoader {
     @Override
     public RecordSet getRecords(DataLoadingSpec spec) throws MalformedSourceException {
         return getRecords();
+    }
+
+    @Override
+    public boolean hasMoreRecords() {
+        for (DataLoader loader : dataLoaders) {
+            if (loader.hasMoreRecords()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void addDataLoader(DataLoader loader) {

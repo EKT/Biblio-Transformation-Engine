@@ -165,6 +165,11 @@ public class ExcelDataLoader extends FileDataLoader {
         return getRecords();
     }
 
+    @Override
+    public boolean hasMoreRecords() {
+        return !isRead;
+    }
+
     private void openReader() throws IOException, InvalidFormatException {
         wb = WorkbookFactory.create(new File(filename));
     }

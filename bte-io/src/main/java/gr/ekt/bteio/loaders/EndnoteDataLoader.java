@@ -56,11 +56,13 @@ public class EndnoteDataLoader extends FileDataLoader {
     private static Logger logger_ = Logger.getLogger(EndnoteDataLoader.class);
     private BufferedReader reader_;
     private Map<String, String> field_map_;
+    private boolean m_moreRecords;
 
     public EndnoteDataLoader() {
         super();
         reader_ = null;
         field_map_ = null;
+        m_moreRecords = false;
     }
 
     public EndnoteDataLoader(String filename, Map<String, String> field_map) throws EmptySourceException {
@@ -148,6 +150,7 @@ public class EndnoteDataLoader extends FileDataLoader {
                     current_record.addValue(current_field, new StringValue(current_value));
                 }
             }
+            m_moreRecords = false;
         } catch (IOException e) {
             logger_.info("Error while reading from file " + filename);
             throw new MalformedSourceException("Error while reading from file " + filename);
@@ -158,6 +161,11 @@ public class EndnoteDataLoader extends FileDataLoader {
     @Override
     public RecordSet getRecords(DataLoadingSpec spec) throws MalformedSourceException {
         return getRecords();
+    }
+
+    @Override
+    public boolean hasMoreRecords() {
+        return m_moreRecords;
     }
 
     @Override
@@ -178,6 +186,7 @@ public class EndnoteDataLoader extends FileDataLoader {
     private void openReader() throws EmptySourceException {
         try {
             reader_ = new BufferedReader(new FileReader(filename));
+            m_moreRecords = true;
         } catch (FileNotFoundException e) {
             throw new EmptySourceException("File " + filename + " not found");
         }

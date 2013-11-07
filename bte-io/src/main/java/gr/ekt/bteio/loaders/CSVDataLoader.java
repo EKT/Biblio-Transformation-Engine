@@ -58,11 +58,14 @@ public class CSVDataLoader extends FileDataLoader {
     private char separator_ = ',';
     private char quote_char_ = '"';
     private String value_separator_ = null;
+    private boolean m_moreRecords;
 
     public CSVDataLoader() {
         super();
         reader_ = null;
         field_map_ = null;
+        // The reader is not open yet, so getRecords() would fail.
+        m_moreRecords = false;
     }
 
     public CSVDataLoader(String filename, Map<Integer, String> fields) throws EmptySourceException {
@@ -106,6 +109,7 @@ public class CSVDataLoader extends FileDataLoader {
                 }
                 rs.addRecord(rec);
             }
+            m_moreRecords = false;
         } catch(IOException e) {
             logger_.info(e.getMessage());
             throw new MalformedSourceException("");
@@ -121,6 +125,11 @@ public class CSVDataLoader extends FileDataLoader {
     }
 
     @Override
+    public boolean hasMoreRecords() {
+        return m_moreRecords;
+    }
+
+    @Override
     protected void finalize() throws Throwable {
         reader_.close();
     }
@@ -128,6 +137,7 @@ public class CSVDataLoader extends FileDataLoader {
     private void openReader() throws EmptySourceException {
         try {
             reader_ = new CSVReader(new FileReader(filename), separator_, quote_char_, skip_lines_);
+            m_moreRecords = true;
         } catch (FileNotFoundException e) {
             throw new EmptySourceException("File " + filename + " not found");
         }

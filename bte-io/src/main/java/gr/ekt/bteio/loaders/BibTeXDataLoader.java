@@ -63,11 +63,13 @@ public class BibTeXDataLoader extends FileDataLoader {
     private static Logger logger_ = Logger.getLogger(BibTeXDataLoader.class);
     private Map<String, String> field_map_;
     private FileReader reader_;
+    private boolean m_moreRecords;
 
     public BibTeXDataLoader() {
         super();
         field_map_ = null;
         reader_ = null;
+        m_moreRecords = true;
     }
 
     public BibTeXDataLoader(String filename, Map<String, String> fields) throws EmptySourceException {
@@ -88,6 +90,7 @@ public class BibTeXDataLoader extends FileDataLoader {
 
         try {
             bibtex_entries = loadFile();
+            m_moreRecords = false;
         } catch (IOException e) {
             logger_.info("Problem loading file: " + filename);
             throw new MalformedSourceException("Problem loading file: " + filename);
@@ -136,6 +139,12 @@ public class BibTeXDataLoader extends FileDataLoader {
     @Override
     public RecordSet getRecords(DataLoadingSpec spec) throws MalformedSourceException {
         return getRecords();
+    }
+
+
+    @Override
+    public boolean hasMoreRecords() {
+        return m_moreRecords;
     }
 
     @Override

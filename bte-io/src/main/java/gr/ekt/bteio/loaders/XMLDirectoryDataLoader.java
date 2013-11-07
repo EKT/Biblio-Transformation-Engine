@@ -33,6 +33,7 @@
  */
 package gr.ekt.bteio.loaders;
 
+/*
 import java.io.FilenameFilter;
 import java.io.File;
 import java.io.IOException;
@@ -107,4 +108,9 @@ public class XMLDirectoryDataLoader extends FileDataLoader {
         //TODO implement when DataLoadingSpec gets defined.
         return getRecords();
     }
+}
+*/
+
+//TODO: REDESIGN this class from scratch.
+public class XMLDirectoryDataLoader {
 }

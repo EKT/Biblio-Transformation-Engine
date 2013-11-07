@@ -140,6 +140,12 @@ public class OAIPMHDataLoader implements DataLoader {
         return getRecords();
     }
 
+
+    @Override
+    public boolean hasMoreRecords() {
+        return has_more_records_;
+    }
+
     /**
      * @return the server_address_
      */
