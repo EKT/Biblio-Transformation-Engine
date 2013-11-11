@@ -73,6 +73,7 @@ public class OAIPMHDataLoader implements DataLoader {
     public OAIPMHDataLoader(String server_address, String prefix, Map<String, String> field_map) {
         server_address_ = server_address;
         server_ = new OaiPmhServer(server_address_);
+        has_more_records_ = true;
         prefix_ = prefix;
         field_map_ = field_map;
     }

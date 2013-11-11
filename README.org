@@ -40,7 +40,7 @@
 <dependency>
   <groupId>gr.ekt.bte</groupId>
   <artifactId>bte-core</artifactId>
-  <version>0.9.3</version>
+  <version>0.9.3.1</version>
 </dependency>
 #+END_SRC
 
@@ -51,7 +51,7 @@
 <dependency>
   <groupId>gr.ekt.bte</groupId>
   <artifactId>bte-io</artifactId>
-  <version>0.9.3</version>
+  <version>0.9.3.1</version>
 </dependency>
 #+END_SRC
 
@@ -123,3 +123,5 @@ mvn install
       repository when issuing mvn install
     + Bugfixes for OAI-PMH data loader
 
+  - version 0.9.3.1
+    + Fixed bug in OAIPMHDataLoader
