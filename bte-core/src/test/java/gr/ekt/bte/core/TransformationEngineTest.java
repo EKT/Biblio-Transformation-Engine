@@ -150,7 +150,7 @@ public class TransformationEngineTest {
     @Test
     public void testTransform() {
         try {
-            TransformationEngine te = new TransformationEngine(dl, og, empty_workflow);
+            TransformationEngine te = new StepTransformationEngine(dl, og, empty_workflow);
             TransformationSpec spec = new TransformationSpec();
             spec.setNumberOfRecords(100);
 
@@ -198,7 +198,7 @@ public class TransformationEngineTest {
     @Test
     public void testTransformWithFullFilter() {
         try {
-            TransformationEngine te = new TransformationEngine(dl, og, full_filter_workflow);
+            TransformationEngine te = new StepTransformationEngine(dl, og, full_filter_workflow);
 
             TransformationSpec spec = new TransformationSpec();
             spec.setNumberOfRecords(100);
@@ -224,7 +224,7 @@ public class TransformationEngineTest {
     @Test
     public void testTransformWithHalfFilter() {
         try {
-            TransformationEngine te = new TransformationEngine(dl, og, half_filter_workflow);
+            TransformationEngine te = new StepTransformationEngine(dl, og, half_filter_workflow);
 
             TransformationSpec spec = new TransformationSpec();
             spec.setNumberOfRecords(100);
