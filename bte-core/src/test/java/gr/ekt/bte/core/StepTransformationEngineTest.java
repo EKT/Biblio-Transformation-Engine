@@ -38,13 +38,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import gr.ekt.bte.dataloader.DataLoaderMock;
 import gr.ekt.bte.exceptions.BadTransformationSpec;
-import gr.ekt.bte.exceptions.EmptySourceException;
 import gr.ekt.bte.exceptions.MalformedSourceException;
-import gr.ekt.bte.record.MapRecord;
-
-import java.util.ArrayList;
-import java.util.List;
+import gr.ekt.bte.outputgenerator.OutputGeneratorMock;
+import gr.ekt.bte.workflow.FullFilter;
+import gr.ekt.bte.workflow.HalfFilter;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -56,89 +55,10 @@ public class StepTransformationEngineTest {
     private Workflow full_filter_workflow;
     private Workflow half_filter_workflow;
 
-    private class SimpleOutputGenerator implements OutputGenerator {
-        public List<String> generateOutput(RecordSet recs) {
-            ArrayList<String> ret = new ArrayList<String>();
-
-            for(Record rec : recs) {
-                ret.add(rec.getValues("id").get(0).getAsString());
-            }
-
-            return ret;
-        }
-
-        public List<String> generateOutput(RecordSet recs, DataOutputSpec spec) {
-            return generateOutput(recs);
-        }
-    }
-
-    private class SimpleDataLoader implements DataLoader {
-        // A simple data loader that has only 500 records to return
-        private int id = 0;
-
-        public RecordSet getRecords() throws EmptySourceException {
-            return getRecords(null);
-        }
-
-        public RecordSet getRecords(DataLoadingSpec spec) throws EmptySourceException {
-            RecordSet ret = new RecordSet();
-
-            for (int i = 0; i < spec.getNumberOfRecords(); i++) {
-                MapRecord rec = new MapRecord();
-                if (id >= 500) {
-                    break;
-                }
-                rec.addValue("id", new StringValue(Integer.toString(id++)));
-                ret.addRecord(rec);
-            }
-
-            return ret;
-        }
-
-        @Override
-        public boolean hasMoreRecords() {
-            if (id >= 500) {
-                return false;
-            }
-            return true;
-        }
-    }
-
-    private class FullFilter extends AbstractFilter {
-        public FullFilter() {
-            super("Full filter");
-        }
-
-        @Override
-        public boolean isIncluded(Record rec) {
-            return false;
-        }
-    }
-
-    private class HalfFilter extends AbstractFilter {
-        public HalfFilter() {
-            super("Half filter");
-        }
-
-        @Override
-        public boolean isIncluded(Record rec) {
-            /* Get only odd numbered records from the first 100, and all
-             * of them for the next 100.
-             */
-            if (Integer.parseInt(rec.getValues("id").get(0).getAsString()) > 100)
-                return true;
-            if ((Integer.parseInt(rec.getValues("id").get(0).getAsString()) % 2) == 0) {
-                return false;
-            }
-
-            return true;
-        }
-    }
-
     @Before
     public void setUp() {
-        dl = new SimpleDataLoader();
-        og = new SimpleOutputGenerator();
+        dl = new DataLoaderMock();
+        og = new OutputGeneratorMock();
         empty_workflow = new LinearWorkflow();
         full_filter_workflow = new LinearWorkflow();
         full_filter_workflow.addStepAtEnd(new FullFilter());
