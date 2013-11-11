@@ -115,3 +115,5 @@ mvn install
       implemented it in XPathRecord and MapRecord.
     + Fixed DSpaceOutputGenerator bug: Consecutive calls to
       writeOutput, do not overwrite previously written data anymore.
+    + Bugfix for OAI-PMH data loader
+
