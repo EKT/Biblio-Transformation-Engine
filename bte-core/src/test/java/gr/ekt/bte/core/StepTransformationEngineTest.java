@@ -49,7 +49,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TransformationEngineTest {
+public class StepTransformationEngineTest {
     private DataLoader dl;
     private OutputGenerator og;
     private Workflow empty_workflow;
