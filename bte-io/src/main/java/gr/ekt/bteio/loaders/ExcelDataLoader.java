@@ -105,7 +105,7 @@ public class ExcelDataLoader extends FileDataLoader {
             for(int i = 0; i < nSheets; i++) {
                 Sheet cSheet = wb.getSheetAt(i);
                 String cSheetName = cSheet.getSheetName();
-                for(int j = skipLines; j < cSheet.getLastRowNum(); j++) {
+                for(int j = skipLines; j <= cSheet.getLastRowNum(); j++) {
                     if (ignoreLinesAfter != 0 && j >= ignoreLinesAfter) {
                         break;
                     }
