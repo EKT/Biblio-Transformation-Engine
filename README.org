@@ -40,7 +40,7 @@
 <dependency>
   <groupId>gr.ekt.bte</groupId>
   <artifactId>bte-core</artifactId>
-  <version>0.9.3.1</version>
+  <version>0.9.3.2</version>
 </dependency>
 #+END_SRC
 
@@ -51,7 +51,7 @@
 <dependency>
   <groupId>gr.ekt.bte</groupId>
   <artifactId>bte-io</artifactId>
-  <version>0.9.3.1</version>
+  <version>0.9.3.2</version>
 </dependency>
 #+END_SRC
 
@@ -126,3 +126,6 @@ mvn install
   - version 0.9.3.1
     + Fixed bug in OAIPMHDataLoader
     + Fixed bug in ExcelDataLoader
+
+  - version 0.9.3.2
+    + Added ScreenOutputGenerator useful for debugging
