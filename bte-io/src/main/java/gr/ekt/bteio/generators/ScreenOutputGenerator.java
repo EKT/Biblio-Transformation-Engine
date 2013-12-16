@@ -13,8 +13,9 @@ public class ScreenOutputGenerator implements OutputGenerator {
     @Override
     public List<String> generateOutput(RecordSet recs) {
 
+        System.out.println("=================Records=================");
         for (Record rec : recs) {
-            System.out.println("==============Record==============");
+            System.out.println("--------------Record--------------");
             for (String str : rec.getFields()) {
                 List<Value> vals = rec.getValues(str);
                 if (vals != null) {
@@ -25,6 +26,7 @@ public class ScreenOutputGenerator implements OutputGenerator {
                 }
             }
         }
+        System.out.println("=================Records end=================");
         return new ArrayList<String>();
     }
 
