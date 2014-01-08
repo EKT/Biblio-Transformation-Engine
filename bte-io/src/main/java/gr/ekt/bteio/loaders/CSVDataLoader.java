@@ -94,6 +94,9 @@ public class CSVDataLoader extends FileDataLoader {
                 MapRecord rec = new MapRecord();
                 for(Map.Entry<Integer,String> en : field_map_.entrySet()) {
                     int i = en.getKey();
+                    if (next_line.length <= i) {
+                        throw new MalformedSourceException("The requested column " + i + " does not exist");
+                    }
                     if (value_separator_ != null) {
                         String values[] = next_line[i].split(value_separator_);
                         for(int j = 0; j < values.length; j++) {
