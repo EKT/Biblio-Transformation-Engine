@@ -46,7 +46,7 @@
     <dependency>
       <groupId>org.jbibtex</groupId>
       <artifactId>jbibtex</artifactId>
-      <version>1.0.8</version>
+      <version>1.0.10</version>
     </dependency>
     <dependency>
       <groupId>se.kb</groupId>
