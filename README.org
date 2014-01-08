@@ -129,3 +129,5 @@ mvn install
 
   - version 0.9.3.2
     + Added ScreenOutputGenerator useful for debugging
+    + Updated jbibtex library version to 1.0.10
+    + Fixed bug in CSVDataLoader
