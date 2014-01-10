@@ -88,7 +88,7 @@ mvn install
 ** BTE io dependencies
    - opencsv version 2.3 (http://opencsv.sourceforge.net/)
    - google gson version 2.2.4 (https://code.google.com/p/google-gson/)
-   - jbibtex version 1.0.8 (https://code.google.com/p/java-bibtex/)
+   - jbibtex version 1.0.10 (https://code.google.com/p/java-bibtex/)
    - oai4j version 0.6b1 (http://oai4j-client.sourceforge.net/)
 
 
