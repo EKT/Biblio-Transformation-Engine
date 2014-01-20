@@ -65,24 +65,23 @@ public class CSVDataLoader extends FileDataLoader {
         field_map_ = null;
     }
 
-    public CSVDataLoader(String filename, Map<Integer, String> fields) throws EmptySourceException {
+    public CSVDataLoader(String filename, Map<Integer, String> fields) {
         super(filename);
         field_map_ = fields;
-        openReader();
     }
 
-    public CSVDataLoader(String filename, Map<Integer, String> fields, char separator, char quote_char, int skip_lines, String value_separator) throws EmptySourceException {
+    public CSVDataLoader(String filename, Map<Integer, String> fields, char separator, char quote_char, int skip_lines, String value_separator) {
         super(filename);
         field_map_ = fields;
         separator_ = separator;
         quote_char_ = quote_char;
         skip_lines_ = skip_lines;
         value_separator_ = value_separator;
-        openReader();
     }
 
     @Override
-    public RecordSet getRecords() throws MalformedSourceException {
+    public RecordSet getRecords() throws MalformedSourceException, EmptySourceException {
+        openReader();
         if (reader_ == null) {
             throw new EmptySourceException("Input file is not open");
         }
@@ -120,6 +119,9 @@ public class CSVDataLoader extends FileDataLoader {
     @Override
     public RecordSet getRecords(DataLoadingSpec spec) throws MalformedSourceException {
         //Not using the DataLoadingSpec for the moment
+        if (spec.getOffset() > 0) {
+            return new RecordSet();
+        }
         return getRecords();
     }
 
