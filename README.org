@@ -40,7 +40,7 @@
 <dependency>
   <groupId>gr.ekt.bte</groupId>
   <artifactId>bte-core</artifactId>
-  <version>0.9.3.2</version>
+  <version>0.9.3.3</version>
 </dependency>
 #+END_SRC
 
@@ -51,7 +51,7 @@
 <dependency>
   <groupId>gr.ekt.bte</groupId>
   <artifactId>bte-io</artifactId>
-  <version>0.9.3.2</version>
+  <version>0.9.3.3</version>
 </dependency>
 #+END_SRC
 
@@ -79,7 +79,7 @@ mvn install
   recorded here for reference.
 
   One notable exception is that you will need the Java environment
-  1.6 or newer.
+  1.7 or newer.
 ** BTE parent dependencies (inherited by child projects)
    - log4j version 1.2.17 (http://logging.apache.org/log4j/2.x/)
    - junit version 4.11 (http://junit.org/)
@@ -131,3 +131,6 @@ mvn install
     + Added ScreenOutputGenerator useful for debugging
     + Updated jbibtex library version to 1.0.10
     + Fixed bug in CSVDataLoader
+
+  - version 0.9.3.3
+    + Fixed a bug in CSVDataLoader
