@@ -76,6 +76,7 @@ public class XMLDirectoryDataLoader extends FileDataLoader {
             return null;
         }
         File xmls[] = data_dir.listFiles(new XmlFilter());
+        //TODO factor out the actual reading in order for it to be available for use from getRecords(DataLoadingSpec)
         DocumentBuilderFactory doc_factory = DocumentBuilderFactory.newInstance();
         doc_factory.setNamespaceAware(true);
         try {
@@ -86,6 +87,7 @@ public class XMLDirectoryDataLoader extends FileDataLoader {
                     Document doc = doc_builder.parse(fl);
                     XPathRecord rec = new XPathRecord(doc, xpath_string_map);
                     ret.addRecord(rec);
+                    //TODO handle the exceptions
                 } catch(SAXException e) {
                     logger.info(e.getStackTrace());
                 } catch(IOException e) {
@@ -95,6 +97,7 @@ public class XMLDirectoryDataLoader extends FileDataLoader {
                 }
             }
         } catch(ParserConfigurationException e) {
+            //TODO throw MalformedSourceException
             logger.info(e.getStackTrace());
             return null;
         }
