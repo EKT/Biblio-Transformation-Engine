@@ -337,7 +337,7 @@ public class DSpaceOutputGenerator implements OutputGenerator {
                 continue;
             }
             List<Value> value_list = rec.getValues(rec_field);
-            if (value_list == null) {
+            if (value_list == null || value_list.size() == 0) {
                 logger_.info("Field " + field + " has no values");
                 continue;
             }
