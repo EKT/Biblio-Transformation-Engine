@@ -144,6 +144,12 @@ public class DSpaceOutputGenerator implements OutputGenerator {
                         file_writer.println(contents.getAsJsonPrimitive().getAsString());
                     }
                 }
+                else if (filename.equals("collections")) {
+                    JsonArray data = file_object.getAsJsonArray("data");
+                    for (JsonElement collections : data) {
+                        file_writer.println(collections.getAsJsonPrimitive().getAsString());
+                    }
+                }
                 else if (filename.equals("handle")) {
                     JsonPrimitive data = file_object.getAsJsonPrimitive("data");
                     file_writer.println(data.getAsString());
@@ -178,7 +184,7 @@ public class DSpaceOutputGenerator implements OutputGenerator {
             String elems[] = key.split("\\.");
             if (elems.length == 1) {
                 //We allow handle and contents entries
-                if (elems[0].equals("handle") || elems[0].equals("contents")) {
+                if (elems[0].equals("handle") || elems[0].equals("contents") || elems[0].equals("collections")) {
                     continue;
                 }
                 else {
@@ -292,6 +298,23 @@ public class DSpaceOutputGenerator implements OutputGenerator {
             }
             json_file += sanitize(handle);
             json_file += "\"}"; //closes the handle file
+            ret.add(json_file);
+        }
+        if (field_map_.containsKey("collections")) {
+            json_file = "{\"name\": \"collections\", \"data\":[";
+            List<Value> collection_list = rec.getValues(field_map_.get("collections"));
+            if (collection_list != null) {
+                Iterator<Value> val_it = collection_list.iterator();
+                while(val_it.hasNext()) {
+                    Value val = val_it.next();
+                    json_file += "\"" + sanitize(val.getAsString()) + "\"";
+                    if (val_it.hasNext()) {
+                        json_file += ", ";
+                    }
+                }
+            }
+            json_file += "]";
+            json_file += "}";
             ret.add(json_file);
         }
 
