@@ -4,7 +4,7 @@
   <groupId>gr.ekt.bte</groupId>
   <artifactId>bte-parent</artifactId>
   <packaging>pom</packaging>
-  <version>0.9.2.3</version>
+  <version>0.9.2.4</version>
   <name>Biblio Transformation Engine Parent Project</name>
   <url>http://github.com/EKT/Biblio-Transformation-Engine</url>
   <description>The biblio transformation engine is a java framework developed by the Hellenic National Documentation Centre (EKT, www.ekt.gr) and consists of programmatic APIs for filtering and modifying records that are retrieved from various types of data sources (eg. databases, files, legacy data sources) as well as for outputing them in appropriate standards formats (eg. database files, txt, xml, Excel). The framework includes independent abstract modules that are executed seperately, offering in many cases alternative choices to the user depending of the input data set, the transformation workflow that needs to be executed and the output format that needs to be generated.</description>
@@ -88,8 +88,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.1</version>
         <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
+          <source>1.7</source>
+          <target>1.7</target>
         </configuration>
       </plugin>
     </plugins>

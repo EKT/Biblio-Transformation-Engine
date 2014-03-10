@@ -40,7 +40,7 @@
 <dependency>
   <groupId>gr.ekt.bte</groupId>
   <artifactId>bte-core</artifactId>
-  <version>0.9.2.3</version>
+  <version>0.9.2.4</version>
 </dependency>
 #+END_SRC
 
@@ -51,7 +51,7 @@
 <dependency>
   <groupId>gr.ekt.bte</groupId>
   <artifactId>bte-io</artifactId>
-  <version>0.9.2.3</version>
+  <version>0.9.2.4</version>
 </dependency>
 #+END_SRC
 
