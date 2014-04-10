@@ -81,7 +81,7 @@ public class TransformationEngine {
         current_offset = 0;
         while((output.size() < spec.getNumberOfRecords() || spec.getNumberOfRecords() == 0) && !end_of_input) {
             RecordSet tmp_recs = null;
-            DataLoadingSpec dl_spec = generateNextLoadingSpec(spec);
+            DataLoadingSpec dl_spec = generateNextLoadingSpec(spec, output.size());
             loading_spec_list.add(dl_spec);
             try {
                 tmp_recs = dataLoader.getRecords(dl_spec);
@@ -113,26 +113,8 @@ public class TransformationEngine {
             kept_records = tmp_recs.size();
             logger.info(tmp_recs.size() + " records remain after workflow.");
 
-            //This is the case where the workflow has returned exactly
-            //the number of records that we need or more.
-            if (spec.getNumberOfRecords() != 0 && output.size() + kept_records >= spec.getNumberOfRecords()) {
-                int needed_recs = spec.getNumberOfRecords() - output.size();
-                //current_offset should contain the *number* of
-                //records that have been examined and either filtered
-                //out or remained in the set in order for output to be
-                //generated for spec.n_records records.
-                current_offset = n_records - (kept_records - needed_recs);
-
-                Iterator<Record> it = tmp_recs.iterator();
-                RecordSet recs_to_keep = new RecordSet();
-                for(int i = 0; i < needed_recs; i++) {
-                    recs_to_keep.addRecord(it.next());
-                }
-                tmp_recs = recs_to_keep;
-            }
-            else { //We have less records than we need.
-                current_offset = n_records;
-            }
+            current_offset = n_records;
+            
             if (tmp_recs.size() == 0) {
                 logger.info("Empty record set. Skiping writting");
                 continue;
@@ -189,10 +171,10 @@ public class TransformationEngine {
     }
 
     //generates the next data loading spec for the iterative loading
-    private DataLoadingSpec generateNextLoadingSpec(TransformationSpec spec) {
+    private DataLoadingSpec generateNextLoadingSpec(TransformationSpec spec, int noOfRecordsWeAlreadyHave) {
         SimpleDataLoadingSpec ret = new SimpleDataLoadingSpec();
 
-        ret.setNumberOfRecords(spec.getNumberOfRecords());
+        ret.setNumberOfRecords(spec.getNumberOfRecords()-noOfRecordsWeAlreadyHave);
         ret.setOffset(spec.getOffset() + current_offset);
         ret.setDataSetName(spec.getDataSetName());
         ret.setFromDate(spec.getFromDate());
