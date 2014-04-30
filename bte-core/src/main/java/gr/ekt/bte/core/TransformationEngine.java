@@ -100,7 +100,8 @@ public class TransformationEngine {
             //has reached the end of input.
             if ((tmp_recs.size() < dl_spec.getNumberOfRecords() &&
                  dl_spec.getNumberOfRecords() != 0) ||
-                (tmp_recs.size() == 0 && dl_spec.getNumberOfRecords() == 0)) {
+                //(tmp_recs.size() == 0 && dl_spec.getNumberOfRecords() == 0)) {
+                 dl_spec.getNumberOfRecords() == 0) {
                 end_of_input = true;
             }
             n_records += tmp_recs.size();
