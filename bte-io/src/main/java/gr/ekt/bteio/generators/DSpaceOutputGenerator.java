@@ -343,8 +343,12 @@ public class DSpaceOutputGenerator implements OutputGenerator {
             }
 
             for (int j = 0; j < value_list.size(); j++) {
-                String json_value = "{\"dcvalue\": {";
                 Value val = value_list.get(j);
+                if (val.getAsString().equals("")) {
+                    logger_.debug("Empty value, not writing");
+                    continue;
+                }
+                String json_value = "{\"dcvalue\": {";
                 for (int idx = 0; idx < field_elems.length; idx++) {
                     json_value += "\"" + titles[idx] + "\": \"" + field_elems[idx] + "\", ";
                 }
