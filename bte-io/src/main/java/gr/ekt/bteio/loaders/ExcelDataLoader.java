@@ -55,23 +55,23 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 public class ExcelDataLoader extends FileDataLoader {
-    private static Logger logger = Logger.getLogger(ExcelDataLoader.class);
-    private Workbook wb;
-    private Map<Integer, String> fieldMap;
+    private static Logger logger_ = Logger.getLogger(ExcelDataLoader.class);
+    private Workbook wb_;
+    private Map<Integer, String> fieldMap_;
     //Ignore the lines before line number skipLines
-    private int skipLines;
-    //If the ignoreLines == 0 then we read all the lines (respecting skipLines)
-    private int ignoreLinesAfter;
-    private boolean isRead;
+    private int skipLines_;
+    //If the ignoreLines == 0 then we read all the lines (respecting skipLines_)
+    private int ignoreLinesAfter_;
+    private boolean isRead_;
 
     public ExcelDataLoader(String filename, Map<Integer, String> fieldMap) {
         super(filename);
         new File(filename);
-        this.fieldMap = fieldMap;
-        this.skipLines = 0;
-        this.ignoreLinesAfter = 0;
-        wb = null;
-        isRead = false;
+        this.fieldMap_ = fieldMap;
+        this.skipLines_ = 0;
+        this.ignoreLinesAfter_ = 0;
+        wb_ = null;
+        isRead_ = false;
     }
 
     @Override
@@ -80,15 +80,15 @@ public class ExcelDataLoader extends FileDataLoader {
             openReader();
         }
         catch (IOException e) {
-            logger.info("Problem loading file: " + filename
-                        + " (" + e.getMessage() + ")");
+            logger_.info("Problem loading file: " + filename
+                    + " (" + e.getMessage() + ")");
             throw new MalformedSourceException("Problem loading file: "
                                                + filename + " ("
                                                + e.getMessage() + ")");
         }
         catch (InvalidFormatException e) {
-            logger.info("Problem loading file: " + filename
-                        + " (" + e.getMessage() + ")");
+            logger_.info("Problem loading file: " + filename
+                    + " (" + e.getMessage() + ")");
             throw new MalformedSourceException("Problem loading file: "
                                                + filename + " ("
                                                + e.getMessage() + ")");
@@ -98,21 +98,21 @@ public class ExcelDataLoader extends FileDataLoader {
 
         //Currently we need this flag in order for
         //TransformationEngine not to go into an infinite loop.
-        if (!isRead) {
-            logger.info("Opening file: " + filename);
-            int nSheets = wb.getNumberOfSheets();
-            logger.info("number of sheets: " + nSheets);
+        if (!isRead_) {
+            logger_.info("Opening file: " + filename);
+            int nSheets = wb_.getNumberOfSheets();
+            logger_.info("number of sheets: " + nSheets);
             for(int i = 0; i < nSheets; i++) {
-                Sheet cSheet = wb.getSheetAt(i);
+                Sheet cSheet = wb_.getSheetAt(i);
                 String cSheetName = cSheet.getSheetName();
-                for(int j = skipLines; j <= cSheet.getLastRowNum(); j++) {
-                    if (ignoreLinesAfter != 0 && j >= ignoreLinesAfter) {
+                for(int j = skipLines_; j <= cSheet.getLastRowNum(); j++) {
+                    if (ignoreLinesAfter_ != 0 && j >= ignoreLinesAfter_) {
                         break;
                     }
                     Row row = cSheet.getRow(j);
                     MapRecord rec = new MapRecord();
                     for(int k = 0; k < row.getLastCellNum(); k++) {
-                        if (!fieldMap.keySet().contains(k)) {
+                        if (!fieldMap_.keySet().contains(k)) {
                             continue;
                         }
                         StringValue val;
@@ -147,14 +147,14 @@ public class ExcelDataLoader extends FileDataLoader {
                                 val = new StringValue("Unsupported cell type");
                         }
 
-                        rec.addValue(fieldMap.get(k), val);
+                        rec.addValue(fieldMap_.get(k), val);
                     }
                     //TODO remove the hardcoded value
                     rec.addValue("ExcelSheetName", new StringValue(cSheetName));
                     ret.addRecord(rec);
                 }
             }
-            isRead = true;
+            isRead_ = true;
         }
         return ret;
     }
@@ -166,49 +166,49 @@ public class ExcelDataLoader extends FileDataLoader {
     }
 
     private void openReader() throws IOException, InvalidFormatException {
-        wb = WorkbookFactory.create(new File(filename));
+        wb_ = WorkbookFactory.create(new File(filename));
     }
 
     /**
-     * @return the fieldMap
+     * @return the fieldMap_
      */
     public Map<Integer, String> getFieldMap() {
-        return fieldMap;
+        return fieldMap_;
     }
 
     /**
-     * @param fieldMap the fieldMap to set
+     * @param fieldMap the fieldMap_ to set
      */
     public void setFieldMap(Map<Integer, String> fieldMap) {
-        this.fieldMap = fieldMap;
+        this.fieldMap_ = fieldMap;
     }
 
     /**
-     * @return the skipLines
+     * @return the skipLines_
      */
     public int getSkipLines() {
-        return skipLines;
+        return skipLines_;
     }
 
     /**
-     * @param skipLines the skipLines to set
+     * @param skipLines the skipLines_ to set
      */
     public void setSkipLines(int skipLines) {
-        this.skipLines = skipLines;
+        this.skipLines_ = skipLines;
     }
 
     /**
-     * @return the ignoreLinesAfter
+     * @return the ignoreLinesAfter_
      */
     public int getIgnoreLinesAfter () {
-        return ignoreLinesAfter;
+        return ignoreLinesAfter_;
     }
 
     /**
-     * @param ignoreLinesAfter the ignoreLinesAfter to set
+     * @param ignoreLinesAfter the ignoreLinesAfter_ to set
      */
     public void setIgnoreLinesAfter (int ignoreLinesAfter) {
-        this.ignoreLinesAfter = ignoreLinesAfter;
+        this.ignoreLinesAfter_ = ignoreLinesAfter;
     }
 
 }

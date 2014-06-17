@@ -98,7 +98,7 @@ public class BibTeXDataLoader extends FileDataLoader {
 
         //This should not happen, but be prepared to handle it anyway
         if (bibtex_entries == null) {
-            logger_.info("Unknown error while reading file: " + filename);
+            logger_.debug("Unknown error while reading file: " + filename);
             throw new EmptySourceException("Unknown error while reading file: " + filename);
         }
         RecordSet ret = new RecordSet();
@@ -153,7 +153,7 @@ public class BibTeXDataLoader extends FileDataLoader {
                 @Override
                 public void checkStringResolution(Key key, BibTeXString string){
                     if(string == null){
-                        logger_.info("Unresolved string: \"" + key.getValue() + "\"");
+                        logger_.debug("Unresolved string: \"" + key.getValue() + "\"");
                     }
                 }
 
@@ -161,7 +161,7 @@ public class BibTeXDataLoader extends FileDataLoader {
                 public void checkCrossReferenceResolution(Key key, BibTeXEntry entry){
 
                     if(entry == null){
-                        logger_.info("Unresolved cross-reference: \"" + key.getValue() + "\"");
+                        logger_.debug("Unresolved cross-reference: \"" + key.getValue() + "\"");
                     }
                 }
             };

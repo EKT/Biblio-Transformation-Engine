@@ -135,7 +135,7 @@ public class DSpaceOutputGenerator implements OutputGenerator {
                 try {
                     file_writer = new PrintWriter(new File(abs_filename));
                 } catch (FileNotFoundException e) {
-                    logger_.info("Cannot open file " + abs_filename);
+                    logger_.debug("Cannot open file " + abs_filename);
                     continue;
                 }
                 if (filename.equals("contents")) {
@@ -188,7 +188,7 @@ public class DSpaceOutputGenerator implements OutputGenerator {
                     continue;
                 }
                 else {
-                    logger_.info("Field \"" + key + "\" is not a valid dspace field name. Ignoring");
+                    logger_.debug("Field \"" + key + "\" is not a valid dspace field name. Ignoring");
                     continue;
                 }
             }
@@ -333,12 +333,12 @@ public class DSpaceOutputGenerator implements OutputGenerator {
             }
             String rec_field = field_map_.get(field);
             if (rec_field == null) {
-                logger_.info("Field " + field + " not found in field map");
+                logger_.debug("Field " + field + " not found in field map");
                 continue;
             }
             List<Value> value_list = rec.getValues(rec_field);
             if (value_list == null || value_list.size() == 0) {
-                logger_.info("Field " + field + " has no values");
+                logger_.debug("Field " + field + " has no values");
                 continue;
             }
 

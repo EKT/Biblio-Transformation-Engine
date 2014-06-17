@@ -53,12 +53,12 @@ import gr.ekt.bte.record.XPathRecord;
 import gr.ekt.bte.dataloader.FileDataLoader;
 
 public class XMLDirectoryDataLoader extends FileDataLoader {
-    private Map<String, String> xpath_string_map;
+    private Map<String, String> xpathStringMap_;
     private static Logger logger = Logger.getLogger(XMLDirectoryDataLoader.class);
 
     public XMLDirectoryDataLoader(String filename, Map<String, String> xpath_string_map) {
         super(filename);
-        this.xpath_string_map = xpath_string_map;
+        this.xpathStringMap_ = xpath_string_map;
     }
 
     class XmlFilter implements FilenameFilter {
@@ -85,7 +85,7 @@ public class XMLDirectoryDataLoader extends FileDataLoader {
             for (File fl : xmls) {
                 try {
                     Document doc = doc_builder.parse(fl);
-                    XPathRecord rec = new XPathRecord(doc, xpath_string_map);
+                    XPathRecord rec = new XPathRecord(doc, xpathStringMap_);
                     ret.addRecord(rec);
                     //TODO handle the exceptions
                 } catch(SAXException e) {

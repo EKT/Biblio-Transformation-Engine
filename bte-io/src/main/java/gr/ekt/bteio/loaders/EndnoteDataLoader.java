@@ -136,12 +136,12 @@ public class EndnoteDataLoader extends FileDataLoader {
                 }
 
                 if (current_field == null && current_tag == null) {
-                    logger_.info("Parse error on line " + line_no + ": Tag expected\n" + line);
+                    logger_.debug("Parse error on line " + line_no + ": Tag expected\n" + line);
                     throw new MalformedSourceException("Parse error on line " + line_no + ": Tag expected\n" + line);
                 }
 
                 if (current_value == null) {
-                    logger_.info("Parse error on line " + line_no + ": Value expected.");
+                    logger_.debug("Parse error on line " + line_no + ": Value expected.");
                     throw new MalformedSourceException("Parse error on line " + line_no + ": Value expected.");
                 }
                 if (current_field != null) {

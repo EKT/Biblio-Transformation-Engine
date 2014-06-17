@@ -52,13 +52,13 @@ import java.util.ArrayList;
 
 
 public class CSVOutputGenerator implements OutputGenerator {
-    private List<String> m_fields;
-    private CSVWriter m_writer;
-    private static Logger m_logger = Logger.getLogger(CSVOutputGenerator.class);
+    private List<String> fields_;
+    private CSVWriter writer_;
+    private static Logger logger_ = Logger.getLogger(CSVOutputGenerator.class);
 
     public CSVOutputGenerator(String filename, List<String> fields) throws FileNotFoundException, IOException {
-        m_writer = new CSVWriter(new FileWriter(filename));
-        m_fields = fields;
+        writer_ = new CSVWriter(new FileWriter(filename));
+        fields_ = fields;
     }
 
     @Override
@@ -66,9 +66,9 @@ public class CSVOutputGenerator implements OutputGenerator {
         Iterator<Record> rec_it = record_set.iterator();
         while (rec_it.hasNext()) {
             Record rec = rec_it.next();
-            String [] line = new String[m_fields.size()];
-            for (int i = 0; i < m_fields.size(); i++) {
-                List<Value> vals = rec.getValues(m_fields.get(i));
+            String [] line = new String[fields_.size()];
+            for (int i = 0; i < fields_.size(); i++) {
+                List<Value> vals = rec.getValues(fields_.get(i));
                 if (vals == null || vals.size() == 0) {
                     continue;
                 }
@@ -84,13 +84,13 @@ public class CSVOutputGenerator implements OutputGenerator {
 
                 line[i] = val;
             }
-            m_writer.writeNext(line);
+            writer_.writeNext(line);
         }
 
         try{
-            m_writer.flush();
+            writer_.flush();
         } catch(IOException e) {
-            m_logger.info(e.getMessage());
+            logger_.info(e.getMessage());
         }
         return new ArrayList<String>();
     }

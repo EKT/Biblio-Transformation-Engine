@@ -103,7 +103,7 @@ public class RISDataLoader extends FileDataLoader {
                             rec = new MapRecord();
                         }
                         else {
-                            logger_.info("Line: " + line_cnt + " in file " + filename + " should contain tag \"TY\"");
+                            logger_.debug("Line: " + line_cnt + " in file " + filename + " should contain tag \"TY\"");
                             throw new MalformedSourceException("Line: " + line_cnt + " in file " + filename + " should contain tag \"TY\"");
                         }
                     }

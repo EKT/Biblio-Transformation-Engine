@@ -42,17 +42,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MultiSourceDataLoader implements DataLoader {
-    private List<DataLoader> dataLoaders;
+    private List<DataLoader> dataLoaders_;
 
     public MultiSourceDataLoader() {
-        dataLoaders = new ArrayList<DataLoader>();
+        dataLoaders_ = new ArrayList<DataLoader>();
     }
 
     @Override
     public RecordSet getRecords() throws MalformedSourceException {
         RecordSet ret = new RecordSet();
 
-        for (DataLoader loader : dataLoaders) {
+        for (DataLoader loader : dataLoaders_) {
             RecordSet cSet = loader.getRecords();
             ret.addAll(cSet);
         }
@@ -66,20 +66,20 @@ public class MultiSourceDataLoader implements DataLoader {
     }
 
     public void addDataLoader(DataLoader loader) {
-        dataLoaders.add(loader);
+        dataLoaders_.add(loader);
     }
 
     /**
-     * @return the dataLoaders
+     * @return the dataLoaders_
      */
     public List<DataLoader> getDataLoaders() {
-        return dataLoaders;
+        return dataLoaders_;
     }
 
     /**
-     * @param dataLoaders the dataLoaders to set
+     * @param dataLoaders the dataLoaders_ to set
      */
     public void setDataLoaders(List<DataLoader> dataLoaders) {
-        this.dataLoaders = dataLoaders;
+        this.dataLoaders_ = dataLoaders;
     }
 }
