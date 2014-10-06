@@ -40,7 +40,7 @@
 <dependency>
   <groupId>gr.ekt.bte</groupId>
   <artifactId>bte-core</artifactId>
-  <version>0.9.3.4</version>
+  <version>0.9.3.5</version>
 </dependency>
 #+END_SRC
 
@@ -51,7 +51,7 @@
 <dependency>
   <groupId>gr.ekt.bte</groupId>
   <artifactId>bte-io</artifactId>
-  <version>0.9.3.4</version>
+  <version>0.9.3.5</version>
 </dependency>
 #+END_SRC
 
@@ -134,3 +134,14 @@ mvn install
 
   - version 0.9.3.3
     + Fixed a bug in CSVDataLoader
+
+  - version 0.9.3.4
+
+    + Added support for DSpace collections in DSpaceOutputGenerator
+    + DSpaceOutputGenerator no longer prints empty fields
+    + Fix issue with loops when requesting more data to process
+
+  - version 0.9.3.5
+
+    + Corrected bug in setting end_of_input in TransformationEngine.java
+    + Fixed bug in DSpaceOutputGenerator to not write empty values
